@@ -12,6 +12,8 @@ class Unit(BaseModel):
     bathrooms: Optional[float] = None
     rent: Optional[float] = None
     rent_source: str = "fmr"  # fmr | estimate | override | listing
+    rent_low: Optional[float] = None   # ±1 SD band around the projection
+    rent_high: Optional[float] = None
     owner_occupied: bool = False
 
 

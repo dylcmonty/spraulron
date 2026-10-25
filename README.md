@@ -54,14 +54,15 @@ County and HUD/OHFA pages are public records fetched with ordinary HTTP at low v
 Realtor.com client; keep refresh intervals modest and treat it as a convenience that may break. RentCast's API terms allow
 local storage and display. Nothing here is underwriting, legal advice or a title search.
 
-## Profit screen
+## Filters and ranges
 
-The Market filters default to a cash-flow test rather than a price cap, following the analysis: a listing shows when
-tenant rent minus the 20% reserve, the FHA PITI at the panel's rate/down payment, and shared utilities is at least the
-"min monthly cash flow" slider (default $0, i.e. net-positive), its price is within the FHA loan limit for its unit count, and a
-3–4 unit passes the self-sufficiency test (75% of all-unit rent ≥ PITI). A $400k fourplex whose rents carry it therefore stays
-while a $150k duplex that doesn't drops out. Move the rate or target sliders and every row recomputes. Rows whose unit count is
-only assumed are kept regardless (toggle) because they can't be judged yet; the "max price" box is still there if you want a cap.
+Filters act on three things only: price, projected rent per unit and the FHA down payment needed. Everything in the
+FHA panel (rate, DPA, down %, closing, reserves, rent factor, target, tax/insurance/utilities overrides) feeds the computed
+columns and never hides a row. Opening a row shows ±1 standard-deviation bands: the likely sale price (asking × the sale÷list
+ratio of recent multifamily sales in that county, and sold $/unit comparables for the same unit count), both from Realtor.com
+sales over the last `sold_past_days` with only the aggregates cached, and the rent band per unit from the spread of HUD ZIP-level
+FMRs for that bedroom count (`rent_rel_sd_fallback` when no ZIP data exists). Table cells show the plain list price and the
+projected rent per unit.
 
 ## Unit counts
 

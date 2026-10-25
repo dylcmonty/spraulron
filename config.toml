@@ -34,6 +34,13 @@ cuyahoga_forfeited = 24
 cuyahoga_landbank = 24
 ohfa_rates = 12
 hud_fmr = 720
+sold_stats = 24
+
+[market]
+# Recent Realtor.com multifamily sales feed the sale-to-list and $/unit spreads (aggregates only are cached).
+sold_past_days = 180
+# Relative ±1 SD applied to a unit's FMR when no ZIP-level spread is available.
+rent_rel_sd_fallback = 0.15
 
 [fha]
 # Used only if the live OHFA rate page cannot be read.

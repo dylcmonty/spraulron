@@ -1,6 +1,8 @@
 """Orchestration: run sources through the cache, enrich rows with rents + FHA math, manage overrides."""
 from __future__ import annotations
 
+import math
+
 import json
 import re
 import threading
@@ -25,6 +27,34 @@ RENOVATION_RE = re.compile(r"unfinished|renovat|rehab|as[- ]is|handyman|investor
 MIXED_USE_RE = re.compile(r"storefront|commercial|retail|mixed[- ]use|office space", re.I)
 
 
+def _mean(xs: list) -> Optional[float]:
+    vals = [x for x in xs if x is not None]
+    return sum(vals) / len(vals) if vals else None
+
+
+def price_range(price: Optional[float], units: Optional[int], sold: dict, past_days: Optional[int] = None, min_n: int = 8) -> Optional[dict]:
+    """±1 SD bands for what a listing might actually sell for, from recent county sales (aggregates only).
+
+    'sale'  : list price × (sale÷list ratio mean ± SD) — what this asking price tends to close at.
+    'comps' : units × (sold $/unit mean ± SD) for the same unit count (falls back to all multifamily).
+    """
+    out: dict = {"past_days": past_days}
+    r = sold.get("ratio") or {}
+    if price and r.get("n", 0) >= min_n:
+        out["sale"] = {"low": price * (r["mean"] - r["sd"]), "mid": price * r["median"], "high": price * (r["mean"] + r["sd"]),
+                       "n": r["n"], "mean": r["mean"], "sd": r["sd"]}
+    pu, basis = (sold.get("per_unit") or {}).get(str(units)) or {}, f"{units}-unit"
+    if pu.get("n", 0) < min_n:
+        pu, basis = sold.get("all_per_unit") or {}, "all multifamily"
+    if units and pu.get("n", 0) >= min_n:
+        if "log_mean" in pu:  # geometric band: exp(mean ± sd of log $/unit)
+            lo, hi = math.exp(pu["log_mean"] - pu["log_sd"]), math.exp(pu["log_mean"] + pu["log_sd"])
+        else:
+            lo, hi = max(pu["mean"] - pu["sd"], 0), pu["mean"] + pu["sd"]
+        out["comps"] = {"low": units * lo, "mid": units * pu["median"], "high": units * hi, "n": pu["n"], "basis": basis}
+    return out if ("sale" in out or "comps" in out) else None
+
+
 class Services:
     def __init__(self, settings: Settings):
         self.settings = settings
@@ -47,6 +77,7 @@ class Services:
             "cuyahoga_forfeited": {"label": cuyahoga_forfeited.LABEL, "ttl": s.ttl_seconds("cuyahoga_forfeited", 24), "page": "auctions"},
             "cuyahoga_landbank": {"label": cuyahoga_landbank.LABEL, "ttl": s.ttl_seconds("cuyahoga_landbank", 24), "page": "auctions"},
             "homeharvest": {"label": market_homeharvest.LABEL, "ttl": s.ttl_seconds("homeharvest", 6), "page": "market"},
+            "sold_stats": {"label": "Realtor.com recent sales (spreads only)", "ttl": s.ttl_seconds("sold_stats", 24), "page": "market"},
             "rentcast": {"label": market_rentcast.LABEL, "ttl": s.ttl_seconds("rentcast", 24), "page": "market"},
         }
 
@@ -78,6 +109,8 @@ class Services:
             return with_client(lambda c: cuyahoga_landbank.fetch(c, s))
         if key == "homeharvest":
             return lambda: market_homeharvest.fetch(None, s)
+        if key == "sold_stats":
+            return lambda: market_homeharvest.fetch_sold_stats(None, s, past_days=s.market.sold_past_days)
         if key == "rentcast":
             return with_client(lambda c: market_rentcast.fetch(c, s))
         raise KeyError(key)
@@ -161,9 +194,12 @@ class Services:
     def market(self, assumptions: FhaAssumptions, force: bool = False, sources: Optional[list[str]] = None) -> dict:
         keys = sources or ["homeharvest"] + (["rentcast"] if self.settings.rentcast_api_key else [])
         futures = {k: self.pool.submit(self.run, k, force) for k in keys}
+        sold_future = self.pool.submit(self.run, "sold_stats", force)
         results = {k: f.result() for k, f in futures.items()}
+        sold_res = sold_future.result()
+        sold_stats = sold_res.data if isinstance(sold_res.data, dict) else {}
         table, rent_status = self.rent_table(force=force)
-        statuses = [self.status(k, r) for k, r in results.items()]
+        statuses = [self.status(k, r) for k, r in results.items()] + [self.status("sold_stats", sold_res)]
         if rent_status:
             statuses.append(rent_status)
         warnings = [f"{st['label']}: {st['error']}" for st in statuses if st.get("error")]
@@ -179,11 +215,12 @@ class Services:
                 if addr_key in seen_addr and listing.source == "rentcast":
                     continue  # HomeHarvest row already covers this address
                 seen_addr.add(addr_key)
-                rows.append(self.enrich_listing(listing, assumptions, table, overrides.get(listing.id, {})))
+                rows.append(self.enrich_listing(listing, assumptions, table, overrides.get(listing.id, {}), sold_stats))
         return {"rows": rows, "sources": statuses, "warnings": warnings,
-                "rent_table": {"source": table.source, "year": table.year, "notes": table.notes}}
+                "rent_table": {"source": table.source, "year": table.year, "notes": table.notes},
+                "sold_stats": {"past_days": sold_stats.get("past_days"), "counties": {c: {"ratio_n": v.get("ratio", {}).get("n", 0), "sales_n": v.get("all_per_unit", {}).get("n", 0)} for c, v in (sold_stats.get("counties") or {}).items()}}}
 
-    def enrich_listing(self, listing: Listing, base: FhaAssumptions, table: RentTable, ov: dict) -> dict:
+    def enrich_listing(self, listing: Listing, base: FhaAssumptions, table: RentTable, ov: dict, sold_stats: Optional[dict] = None) -> dict:
         s = self.settings
         row = listing.model_dump(mode="json")
         units = ov.get("units") or listing.units
@@ -204,7 +241,8 @@ class Services:
         tenant_rent = all_rent = None
         unit_list: list[dict] = []
         if units:
-            units_models = estimate_units(units, listing.beds, listing.zip, listing.county, table, base.market_rent_factor, ov)
+            units_models = estimate_units(units, listing.beds, listing.zip, listing.county, table, base.market_rent_factor, ov,
+                                          rel_sd_fallback=s.market.rent_rel_sd_fallback)
             tenant_rent, all_rent = rent_totals(units_models)
             unit_list = [u.model_dump() for u in units_models]
             if ov.get("rents"):
@@ -219,6 +257,10 @@ class Services:
         row.update({
             "units_final": units, "units_source": units_source, "units_assumed": units_source == "assumed",
             "unit_list": unit_list, "tenant_rent": tenant_rent,
+            "rent_per_unit": (all_rent / units) if all_rent and units else None,
+            "rent_per_unit_low": _mean([u.get("rent_low") for u in unit_list]),
+            "rent_per_unit_high": _mean([u.get("rent_high") for u in unit_list]),
+            "price_range": price_range(listing.price, units, (sold_stats or {}).get("counties", {}).get(listing.county or "", {}), (sold_stats or {}).get("past_days")),
             "all_units_rent": all_rent, "fha": quote.model_dump() if quote else None, "flags": sorted(set(flags)),
             "override": ov, "starred": bool(ov.get("starred")), "hidden": bool(ov.get("hidden")), "notes": ov.get("notes"),
             "tax_rate_used": a.tax_rate,

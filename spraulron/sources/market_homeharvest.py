@@ -120,6 +120,50 @@ def to_listing(p: dict, county_hint: Optional[str] = None) -> Optional[Listing]:
     return listing
 
 
+def _stats(xs: list[float]) -> dict:
+    n = len(xs)
+    if n < 3:
+        return {"n": n}
+    import math
+    import statistics
+    out = {"n": n, "mean": statistics.fmean(xs), "sd": statistics.pstdev(xs), "median": statistics.median(xs)}
+    logs = [math.log(x) for x in xs if x > 0]
+    if len(logs) >= 3:  # prices are right-skewed: a log-space band is the honest ±1 SD
+        out["log_mean"], out["log_sd"] = statistics.fmean(logs), statistics.pstdev(logs)
+    return out
+
+
+def sold_stats_from_records(records: list[dict]) -> dict:
+    """Aggregate recent sales into sale÷list ratios and sold $/unit by unit count. Nothing per-property is kept."""
+    ratios: list[float] = []
+    per_unit: dict[int, list[float]] = {}
+    for rec in records:
+        lp, sp = _num(rec.get("list_price")), _num(rec.get("sold_price"))
+        if lp and sp and 0.4 <= sp / lp <= 1.6:
+            ratios.append(sp / lp)
+        if sp and sp >= 10000:
+            u = parse_units_from_text(rec.get("text")) or assume_units(_num(rec.get("beds")), _num(rec.get("full_baths")))[0]
+            per_unit.setdefault(u, []).append(sp / u)
+    return {"ratio": _stats(ratios), "per_unit": {str(u): _stats(v) for u, v in sorted(per_unit.items())},
+            "all_per_unit": _stats([x for v in per_unit.values() for x in v])}
+
+
+def fetch_sold_stats(client=None, settings=None, counties: Optional[list[str]] = None, past_days: int = 180) -> dict:
+    from homeharvest import scrape_property  # imported lazily: heavy
+
+    counties = counties or (settings.counties.names if settings else ["Cuyahoga", "Summit", "Stark"])
+    out: dict = {"past_days": past_days, "counties": {}, "errors": []}
+    for county in counties:
+        try:
+            df = scrape_property(location=f"{county} County, OH", listing_type="sold", past_days=past_days, property_type=PROPERTY_TYPES)
+            out["counties"][county] = sold_stats_from_records(df.to_dict("records"))
+        except Exception as exc:
+            out["errors"].append(f"{county}: {type(exc).__name__}: {exc}")
+    if not out["counties"]:
+        raise RuntimeError("; ".join(out["errors"]) or "no sold data")
+    return out
+
+
 def fetch(client=None, settings=None, counties: Optional[list[str]] = None, limit: int = 2000) -> list[dict]:
     from homeharvest import scrape_property  # imported lazily: heavy
 

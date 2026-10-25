@@ -29,6 +29,15 @@ class RentTable(BaseModel):
     zip_county: dict[str, str] = Field(default_factory=dict)
     notes: list[str] = Field(default_factory=list)
 
+    def rel_sd(self, bedrooms: Optional[int]) -> Optional[float]:
+        """Relative standard deviation of ZIP-level FMRs for this bedroom count (None if too few ZIPs)."""
+        b = min(max(bedrooms if bedrooms is not None else 2, 0), 4)
+        vals = [v[b] for v in self.zip_fmr.values() if v and v[b]]
+        if len(vals) < 10:
+            return None
+        mean = statistics.fmean(vals)
+        return statistics.pstdev(vals) / mean if mean else None
+
     def fmr(self, zip_code: Optional[str], county: Optional[str], bedrooms: Optional[int]) -> tuple[Optional[float], str]:
         b = min(max(bedrooms if bedrooms is not None else 2, 0), 4)
         if zip_code and zip_code[:5] in self.zip_fmr:
@@ -110,7 +119,8 @@ def distribute_bedrooms(units: int, total_beds: Optional[int]) -> list[Optional[
 
 
 def estimate_units(units: int, total_beds: Optional[int], zip_code: Optional[str], county: Optional[str],
-                   table: RentTable, factor: float = 1.0, overrides: Optional[dict] = None) -> list[Unit]:
+                   table: RentTable, factor: float = 1.0, overrides: Optional[dict] = None,
+                   rel_sd_fallback: float = 0.15) -> list[Unit]:
     """Build Unit records with rent estimates; apply per-listing overrides (unit_beds, rents)."""
     overrides = overrides or {}
     beds_list = overrides.get("unit_beds") or distribute_bedrooms(units, total_beds)
@@ -125,7 +135,9 @@ def estimate_units(units: int, total_beds: Optional[int], zip_code: Optional[str
         fmr, basis = table.fmr(zip_code, county, b if b is not None else 2)
         rent = round(fmr * factor) if fmr is not None else None
         src = "fmr" if table.source.startswith("HUD") else "estimate"
-        out.append(Unit(bedrooms=b, rent=rent, rent_source=f"{src}:{basis}"))
+        rel = table.rel_sd(b) or rel_sd_fallback
+        lo, hi = (round(rent * (1 - rel)), round(rent * (1 + rel))) if rent is not None else (None, None)
+        out.append(Unit(bedrooms=b, rent=rent, rent_source=f"{src}:{basis}", rent_low=lo, rent_high=hi))
     # owner takes the lowest-rent unit
     if out:
         idx = min(range(len(out)), key=lambda i: (out[i].rent if out[i].rent is not None else 1e9))

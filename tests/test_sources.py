@@ -92,6 +92,22 @@ def test_units_from_text_and_homeharvest_mapping():
     assert l.tax_annual == 2900 and l.links["source"] == "https://www.realtor.com/x"
 
 
+def test_sold_stats_and_price_range():
+    from spraulron.sources.market_homeharvest import sold_stats_from_records
+    from spraulron.service import price_range
+    recs = [{"list_price": 100000, "sold_price": 95000 + 1000 * i, "text": "duplex", "beds": 4, "full_baths": 2} for i in range(10)]
+    recs += [{"list_price": 200000, "sold_price": 190000, "text": "triplex"}, {"list_price": 50000, "sold_price": 1000}]  # ratio outlier dropped
+    st = sold_stats_from_records(recs)
+    assert st["ratio"]["n"] == 11 and 0.9 < st["ratio"]["mean"] < 1.0
+    assert st["per_unit"]["2"]["n"] == 10 and st["per_unit"]["3"]["n"] == 1
+    pr = price_range(120000, 2, st, past_days=180)
+    assert pr["sale"]["low"] < pr["sale"]["mid"] < pr["sale"]["high"] and pr["sale"]["n"] == 11
+    assert pr["comps"]["basis"] == "2-unit" and pr["comps"]["low"] < pr["comps"]["mid"] < pr["comps"]["high"]
+    assert "log_mean" in st["per_unit"]["2"]
+    assert price_range(120000, 3, st)["comps"]["basis"] == "all multifamily"
+    assert price_range(120000, 2, {}) is None
+
+
 def test_helpers():
     assert money("$26,661.39") == 26661.39 and money("Not Sold") is None
     assert is_vacant_lot_text("VACANT LOT 3729 EAST 146TH ST") and not is_vacant_lot_text("406 SKYLARK DRIVE")

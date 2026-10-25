@@ -4,7 +4,7 @@
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
   const LS_A = 'spraulron.assumptions.v1';
-  const LS_F = `spraulron.filters.${PAGE.kind}.v2`;
+  const LS_F = `spraulron.filters.${PAGE.kind}.v3`;
   const state = { rows: [], sources: [], rates: {}, warnings: [], assumptions: {}, filters: {}, sort: null, view: 'table', open: new Set(), map: null, layer: null, loading: false, rentTable: null };
 
   // ---------- formatting
@@ -146,13 +146,9 @@
         if (f.min_price && r.price && r.price < Number(f.min_price)) return false;
         if (f.has_photo && !r.photo) return false;
         if (f.units) { const u = r.units_final; const key = (!u || r.units_assumed) ? '?' : u >= 5 ? '5+' : String(u); if (!f.units.includes(key)) return false; }
-        // Profit screen: judged on the modeled numbers, never on a price cap. Rows whose unit count is only
-        // assumed can't be judged, so they stay when keep_assumed is on.
-        if (!(r.units_assumed && f.keep_assumed)) {
-          if (f.min_cashflow !== '' && f.min_cashflow != null && r.fha && r.fha.cash_flow != null && r.fha.cash_flow < Number(f.min_cashflow)) return false;
-          if (f.fha_eligible && r.fha && r.fha.within_loan_limit === false) return false;
-          if (f.self_sufficient && r.fha && r.fha.self_sufficiency_pass === false) return false;
-        }
+        if (f.max_down && r.fha?.down_payment != null && r.fha.down_payment > Number(f.max_down)) return false;
+        if (f.min_rent_unit && r.rent_per_unit != null && r.rent_per_unit < Number(f.min_rent_unit)) return false;
+        if (f.max_rent_unit && r.rent_per_unit != null && r.rent_per_unit > Number(f.max_rent_unit)) return false;
       } else {
         if (f.sale_type && !f.sale_type.includes(r.sale_type)) return false;
         if (f.hide_vacant && r.is_vacant_lot) return false;
@@ -166,7 +162,7 @@
   }
   const getters = {
     price: r => r.price, units: r => r.units_final, beds: r => r.beds, sqft: r => r.sqft, year: r => r.year_built, dom: r => r.days_on_market,
-    rent: r => r.tenant_rent, piti: r => r.fha?.piti, cash: r => r.fha?.cash_flow, total_cash: r => r.fha?.total_cash_needed, breakeven: r => r.fha?.break_even_price,
+    rent: r => r.tenant_rent, rent_unit: r => r.rent_per_unit, down: r => r.fha?.down_payment, piti: r => r.fha?.piti, cash: r => r.fha?.cash_flow, total_cash: r => r.fha?.total_cash_needed, breakeven: r => r.fha?.break_even_price,
     ratio: r => (r.tenant_rent && r.price) ? r.tenant_rent / r.price : null, address: r => r.address, county: r => r.county, city: r => r.city, star: r => r.starred ? 1 : 0,
     type: r => r.sale_type, date: r => r.sale_date || '9999', status: r => r.status, appraised: r => r.appraised, bid: r => r.opening_bid, deposit: r => r.deposit,
     bidratio: r => (r.opening_bid && r.appraised) ? r.opening_bid / r.appraised : null, source: r => r.source_label, parcel: r => r.parcel,
@@ -187,9 +183,8 @@
     if (PAGE.kind === 'market') {
       const pos = rows.filter(r => r.fha?.cash_flow != null && r.fha.cash_flow >= 0).length;
       const unknown = rows.filter(r => !r.units_final || r.units_assumed).length;
-      const screened = rows.length - unknown;
       const med = rows.map(r => r.price).filter(Boolean).sort((a, b) => a - b); const m = med.length ? med[Math.floor(med.length / 2)] : null;
-      el.innerHTML = `<span><b>${rows.length}</b> shown of ${state.rows.length} · <b>${screened}</b> pass the profit screen</span><span><b class="pos">${pos}</b> cash-flow positive (model)</span><span><b>${unknown}</b> unit count assumed</span><span>median price <b>${money(m)}</b></span>${state.rentTable ? `<span class="muted">rents: ${esc(state.rentTable.source)}${state.rentTable.year ? ' FY' + state.rentTable.year : ''}</span>` : ''}`;
+      el.innerHTML = `<span><b>${rows.length}</b> listings shown of ${state.rows.length}</span><span><b class="pos">${pos}</b> cash-flow positive (model)</span><span><b>${unknown}</b> unit count assumed</span><span>median price <b>${money(m)}</b></span>${state.rentTable ? `<span class="muted">rents: ${esc(state.rentTable.source)}${state.rentTable.year ? ' FY' + state.rentTable.year : ''}</span>` : ''}`;
     } else {
       const byType = {}; rows.forEach(r => { byType[r.sale_type] = (byType[r.sale_type] || 0) + 1; });
       const bids = rows.map(r => r.opening_bid).filter(Boolean).sort((a, b) => a - b); const m = bids.length ? bids[Math.floor(bids.length / 2)] : null;
@@ -199,7 +194,7 @@
 
   // ---------- rendering: tables
   const MARKET_COLS = [
-    ['star', '★', ''], ['photo', '', ''], ['address', 'Address', ''], ['price', 'Price', 'num'], ['units', 'Units', 'num'], ['beds', 'Bd/Ba', ''], ['sqft', 'Sqft', 'num'], ['year', 'Yr', 'num'], ['dom', 'DOM', 'num'],
+    ['star', '★', ''], ['photo', '', ''], ['address', 'Address', ''], ['price', 'Price', 'num'], ['units', 'Units', 'num'], ['rent_unit', 'Rent/unit', 'num'], ['down', 'Down pmt', 'num'], ['beds', 'Bd/Ba', ''], ['sqft', 'Sqft', 'num'], ['year', 'Yr', 'num'], ['dom', 'DOM', 'num'],
     ['rent', 'Tenant rent/mo', 'num'], ['piti', 'PITI', 'num'], ['cash', 'Cash flow', 'num'], ['total_cash', 'Cash needed', 'num'], ['breakeven', 'Break-even price', 'num'], ['ratio', 'Rent ÷ price', 'num'], ['flags', 'Flags', ''],
   ];
   const AUCTION_COLS = [
@@ -216,6 +211,8 @@
       case 'beds': return `${r.beds ?? '—'} / ${r.baths ?? '—'}`;
       case 'sqft': return num(r.sqft); case 'year': return r.year_built || '—'; case 'dom': return r.days_on_market ?? '—';
       case 'rent': return r.tenant_rent != null ? money(r.tenant_rent) : '—';
+      case 'rent_unit': return r.rent_per_unit != null ? `<span title="${r.rent_per_unit_low != null ? `range ${money(r.rent_per_unit_low)} – ${money(r.rent_per_unit_high)}` : ''}">${money(r.rent_per_unit)}</span>` : '—';
+      case 'down': return q?.down_payment != null ? money(q.down_payment) : '—';
       case 'piti': return q ? money(q.piti) : '—';
       case 'cash': return q && q.cash_flow != null ? `<span class="${q.cash_flow >= 0 ? 'pos' : 'neg'}">${money(q.cash_flow)}</span>` : '—';
       case 'total_cash': return q ? money(q.total_cash_needed) : '—';
@@ -280,10 +277,17 @@
         <tr><td>Price for ${money(q.target_cashflow)}/mo</td><td>${money(q.target_price)}</td></tr>
         <tr><td>Self-sufficiency (75% of ${money(q.all_units_rent)} ≥ PITI)</td><td>${q.self_sufficiency_pass == null ? 'n/a (2 units)' : q.self_sufficiency_pass ? '<span class="pos">pass</span>' : '<span class="neg">fail</span>'}</td></tr>
         <tr><td>Within FHA ${r.units_final || 1}-unit limit</td><td>${q.within_loan_limit == null ? '—' : q.within_loan_limit ? 'yes' : '<span class="neg">no</span>'}</td></tr></table>` : '<div class="muted">No price on this listing.</div>';
-      const units = (r.unit_list || []).length ? `${r.units_assumed ? '<div class="warn-item">Unit count is a guess from baths/beds, so these rents are a projection only. Click ✎ to set the real count.</div>' : ''}<table class="kv">${r.unit_list.map((u, i) => `<tr><td>Unit ${i + 1} · ${u.bedrooms ?? '?'} bd ${u.owner_occupied ? '<span class="badge ok">you live here</span>' : ''}<div class="muted small">${esc(u.rent_source)}</div></td><td>${money(u.rent)}</td></tr>`).join('')}<tr class="total"><td>All units</td><td>${money(r.all_units_rent)}</td></tr></table>` : '<div class="muted">Units unknown: set the unit count to estimate rents.</div>';
+      const units = (r.unit_list || []).length ? `${r.units_assumed ? '<div class="warn-item">Unit count is a guess from baths/beds, so these rents are a projection only. Click ✎ to set the real count.</div>' : ''}<table class="kv">${r.unit_list.map((u, i) => `<tr><td>Unit ${i + 1} · ${u.bedrooms ?? '?'} bd ${u.owner_occupied ? '<span class="badge ok">you live here</span>' : ''}<div class="muted small">${esc(u.rent_source)}</div></td><td>${money(u.rent)}${u.rent_low != null ? `<div class="muted small">${money(u.rent_low)} – ${money(u.rent_high)}</div>` : ''}</td></tr>`).join('')}<tr class="total"><td>All units</td><td>${money(r.all_units_rent)}</td></tr></table>` : '<div class="muted">Units unknown: set the unit count to estimate rents.</div>';
       const photos = (r.photos || []).slice(0, 12).map(p => `<a href="${esc(p)}" target="_blank" rel="noopener"><img loading="lazy" referrerpolicy="no-referrer" src="${esc(p)}" alt=""></a>`).join('');
+      const pr = r.price_range || {};
+      const band = (label, x, note) => x ? `<tr><td>${label}<div class="muted small">${esc(note)}</div></td><td>${money(x.low)} – ${money(x.high)}<div class="muted small">mid ${money(x.mid)}</div></td></tr>` : '';
+      const ranges = `<table class="kv"><tr><td>List price</td><td>${money(r.price)}</td></tr>
+        ${band('Likely sale price (±1 SD)', pr.sale, pr.sale ? `asking × sold÷list on ${pr.sale.n} ${r.county} multifamily sales, last ${pr.past_days} days: ${(pr.sale.mean * 100).toFixed(1)}% ± ${(pr.sale.sd * 100).toFixed(1)}%` : '')}
+        ${band('Comparable sold prices (±1 SD)', pr.comps, pr.comps ? `${pr.comps.n} ${pr.comps.basis} sales, sold $/unit × ${r.units_final} units` : '')}
+        ${!pr.sale && !pr.comps ? '<tr><td colspan="2" class="muted">No recent sales data for this county yet.</td></tr>' : ''}
+        <tr><td>Rent per unit, projected average<div class="muted small">${r.rent_per_unit_low != null ? '±1 SD of ZIP-level FMRs for the same bedroom count' : ''}</div></td><td>${money(r.rent_per_unit)}${r.rent_per_unit_low != null ? `<div class="muted small">${money(r.rent_per_unit_low)} – ${money(r.rent_per_unit_high)}</div>` : ''}</td></tr></table>`;
       return `<div class="detail-grid">
-        <div><h4>FHA scenario</h4>${fhaTable}</div>
+        <div><h4>Price & rent ranges</h4>${ranges}<h4>FHA scenario</h4>${fhaTable}</div>
         <div><h4>Rent per unit <button class="btn tiny" data-edit="${esc(r.id)}">✎ edit units / rents / notes</button> <button class="btn tiny" data-hide="${esc(r.id)}">${r.hidden ? 'unhide' : 'hide'}</button></h4>${units}${r.notes ? `<p class="small"><b>Notes:</b> ${esc(r.notes)}</p>` : ''}
           <p class="small muted">${esc([r.property_type, r.status, r.mls ? `${r.mls} #${r.mls_id || ''}` : '', r.agent ? `agent ${r.agent}` : '', r.office].filter(Boolean).join(' · '))}${r.tax_annual ? ` · listed tax ${money(r.tax_annual)}/yr` : ''}${r.assessed_value ? ` · assessed ${money(r.assessed_value)}` : ''}</p></div>
         <div><h4>Links</h4><div class="links">${links}</div>${photos ? `<h4>Photos (from source)</h4><div class="photos">${photos}</div>` : ''}${r.description ? `<h4>Listing text</h4><div class="desc">${esc(r.description)}</div>` : ''}</div>

@@ -34,6 +34,11 @@ class MapCfg(BaseModel):
     rentcast_radius_miles: float = 40
 
 
+class MarketCfg(BaseModel):
+    sold_past_days: int = 180
+    rent_rel_sd_fallback: float = 0.15
+
+
 class FhaCfg(BaseModel):
     rate_fallback: float = 0.07375
     rate_dpa_fallback: float = 0.08
@@ -59,6 +64,7 @@ class Settings(BaseModel):
     app: AppCfg = AppCfg()
     counties: CountiesCfg
     map: MapCfg = MapCfg()
+    market: MarketCfg = MarketCfg()
     ttl_hours: dict[str, float] = Field(default_factory=dict)
     fha: FhaCfg = FhaCfg()
     rentcast_api_key: Optional[str] = None
