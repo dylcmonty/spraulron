@@ -29,7 +29,7 @@ class Listing(BaseModel):
     lon: Optional[float] = None
     price: Optional[float] = None
     units: Optional[int] = None
-    units_source: str = "unknown"  # source | text | override | unknown
+    units_source: str = "unknown"  # source | text | override | assumed | unknown
     beds: Optional[int] = None
     baths: Optional[float] = None
     sqft: Optional[int] = None

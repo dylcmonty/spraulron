@@ -2,7 +2,7 @@ from datetime import date
 
 from spraulron.sources import cuyahoga_docket, cuyahoga_forfeited, cuyahoga_landbank, realauction, stark_sheriff
 from spraulron.sources.links import build_links, is_vacant_lot_text, money
-from spraulron.sources.market_homeharvest import parse_units_from_text, to_listing
+from spraulron.sources.market_homeharvest import parse_units_from_text, to_listing, assume_units
 
 
 def test_realauction_token_expansion_and_parse(fixture_json):
@@ -72,6 +72,17 @@ def test_units_from_text_and_homeharvest_mapping():
     assert parse_units_from_text("Fully rented 4 unit building") == 4
     assert parse_units_from_text("Triplex near downtown") == 3
     assert parse_units_from_text("single family home") is None
+    assert parse_units_from_text("Turnkey all-brick four-unit in Hough") == 4
+    assert parse_units_from_text("Both units are rented month to month") == 2
+    assert parse_units_from_text("Unit 1 features 3 bedrooms. Unit 2 has 2. Unit 3 is an efficiency.") == 3
+    assert parse_units_from_text("Updated 2nd floor unit; 1st floor unit is vacant") == 2
+    assert parse_units_from_text("Great double in Old Brooklyn") == 2
+    assert parse_units_from_text("Colonial on a double lot with a double garage") is None
+    assert parse_units_from_text("3 bedroom unit over retail") is None
+    assert assume_units(None, 3.0) == (3, "3 baths")
+    assert assume_units(8, None) == (4, "8 beds")
+    assert assume_units(2, 1.0) == (2, "1 baths")
+    assert assume_units(None, None) == (2, "default")
     p = {"property_url": "https://www.realtor.com/x", "property_id": "123", "list_price": 199900, "county": "Cuyahoga County",
          "address": {"full_line": "8604 Willard Ave", "city": "Cleveland", "state": "OH", "zip": "44102"},
          "description": {"beds": 5, "baths_full": 3, "sqft": 2400, "year_built": 1910, "text": "Triplex with three units", "primary_photo": "https://img/1.jpg", "alt_photos": ["https://img/2.jpg"], "type": "multi_family"},

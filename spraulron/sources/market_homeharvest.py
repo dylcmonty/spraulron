@@ -11,12 +11,18 @@ KEY = "homeharvest"
 LABEL = "Realtor.com via HomeHarvest"
 PROPERTY_TYPES = ["multi_family", "duplex_triplex"]
 
+_KIND = r"(?:family|fam|units?|suites?|apartments?|apts?)"
 _UNIT_PATTERNS = [
-    (re.compile(r"\b(fourplex|four-?plex|quadplex|quadruplex|4[- ]?plex|four[- ]family|4[- ]family|4[- ]units?)\b", re.I), 4),
-    (re.compile(r"\b(triplex|tri-?plex|3[- ]?plex|three[- ]family|3[- ]family|3[- ]units?)\b", re.I), 3),
-    (re.compile(r"\b(duplex|du-?plex|2[- ]?plex|two[- ]family|2[- ]family|2[- ]units?|double)\b", re.I), 2),
+    (re.compile(rf"\b(fourplex|four-?plex|quadplex|quadruplex|4[- ]?plex|four[- ]?{_KIND}|4[- ]?{_KIND})\b", re.I), 4),
+    (re.compile(rf"\b(triplex|tri-?plex|3[- ]?plex|three[- ]?{_KIND}|3[- ]?{_KIND})\b", re.I), 3),
+    (re.compile(rf"\b(duplex|du-?plex|2[- ]?plex|two[- ]?{_KIND}|2[- ]?{_KIND}|both (?:units|sides|suites|apartments|apts|floors)"
+                rf"|side[- ]by[- ]side|up(?:stairs)?[ /&-]+(?:and[ -])?down(?:stairs)?)\b", re.I), 2),
+    # NE Ohio "double" = two-family; skip double lot/garage/sink etc.
+    (re.compile(r"\bdouble\b(?![ -](?:lot|garage|car|sink|vanity|hung|pane|oven|door|wide|closet|driveway|glazed|bowl|parlor))", re.I), 2),
 ]
-_N_UNITS = re.compile(r"\b(\d{1,2})\s*-?\s*(?:unit|units|family)\b", re.I)
+_N_UNITS = re.compile(rf"\b(\d{{1,2}})\s*-?\s*{_KIND}\b", re.I)
+_UNIT_ENUM = re.compile(r"\b(?:unit|suite|apartment|apt)\s*#?\s*([1-4])\b", re.I)
+_FLOOR_UNIT = re.compile(r"\b(first|1st|second|2nd|third|3rd)[- ]floor (?:unit|apartment|suite|apt)\b", re.I)
 
 
 def parse_units_from_text(text: Optional[str]) -> Optional[int]:
@@ -28,7 +34,28 @@ def parse_units_from_text(text: Optional[str]) -> Optional[int]:
     for pat, n in _UNIT_PATTERNS:
         if pat.search(text):
             return n
+    enum = [int(n) for n in _UNIT_ENUM.findall(text)]  # "Unit 1 ... Unit 3"
+    if enum and max(enum) >= 2:
+        return max(enum)
+    floors = [f.lower() for f in _FLOOR_UNIT.findall(text)]  # "2nd floor unit"
+    if floors:
+        return 3 if any(f in ("third", "3rd") for f in floors) else 2
     return None
+
+
+def assume_units(beds: Optional[float], baths: Optional[float]) -> tuple[int, str]:
+    """Guess a 2–4 unit count when the listing never states one.
+
+    Small multifamily almost always has one bath per unit, so bathrooms are the best proxy
+    (about 80% right on listings that do state a count); beds ÷ 2 is the fallback.
+    """
+    if baths:
+        n, basis = int(round(baths)), f"{baths:g} baths"
+    elif beds:
+        n, basis = int(round(beds / 2)), f"{int(beds)} beds"
+    else:
+        n, basis = 2, "default"
+    return min(max(n, 2), 4), basis
 
 
 def _units_from_source(p: dict) -> Optional[int]:

@@ -19,7 +19,7 @@ from .http import make_client
 from .models import FhaAssumptions, Listing
 from .sources import (cuyahoga_docket, cuyahoga_forfeited, cuyahoga_landbank, market_homeharvest, market_rentcast,
                       realauction, stark_sheriff)
-from .sources.market_homeharvest import parse_units_from_text
+from .sources.market_homeharvest import parse_units_from_text, assume_units
 
 RENOVATION_RE = re.compile(r"unfinished|renovat|rehab|as[- ]is|handyman|investor special|203\s*k|fixer|needs work|gut", re.I)
 MIXED_USE_RE = re.compile(r"storefront|commercial|retail|mixed[- ]use|office space", re.I)
@@ -193,8 +193,10 @@ class Services:
             if t:
                 units, units_source = t, "text"
         flags = list(listing.flags)
-        if not units:
-            flags.append("units unknown")
+        if not units:  # keep the rent projection alive with a clearly flagged guess
+            units, basis = assume_units(listing.beds, listing.baths)
+            units_source = "assumed"
+            flags.append(f"units assumed ({units}) from {basis}")
         if listing.description and RENOVATION_RE.search(listing.description):
             flags.append("renovation / as-is wording")
         if listing.description and MIXED_USE_RE.search(listing.description):
@@ -215,7 +217,8 @@ class Services:
                                   tax_annual=listing.tax_annual, loan_limit=limit)
             flags.extend(quote.flags)
         row.update({
-            "units_final": units, "units_source": units_source, "unit_list": unit_list, "tenant_rent": tenant_rent,
+            "units_final": units, "units_source": units_source, "units_assumed": units_source == "assumed",
+            "unit_list": unit_list, "tenant_rent": tenant_rent,
             "all_units_rent": all_rent, "fha": quote.model_dump() if quote else None, "flags": sorted(set(flags)),
             "override": ov, "starred": bool(ov.get("starred")), "hidden": bool(ov.get("hidden")), "notes": ov.get("notes"),
             "tax_rate_used": a.tax_rate,
