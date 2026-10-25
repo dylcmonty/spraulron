@@ -1,13 +1,13 @@
 <details class="panel" open>
   <summary>FHA first-time-buyer assumptions <span id="rate-note" class="muted"></span></summary>
   <div class="panel-body grid2">
-    <label>Rate <input type="number" step="0.001" min="0" max="20" data-assume="rate_pct" placeholder="auto"><span class="unit">%</span></label>
+    <label>Rate <input type="number" step="0.001" min="0" max="20" data-assume="rate_pct" placeholder="auto (OHFA)"><input type="range" min="4" max="12" step="0.125" data-range-for="rate_pct" data-range-kind="assume"><span class="unit">% · blank = live OHFA rate</span></label>
     <label class="check"><input type="checkbox" data-assume="dpa"> with 3.5% OHFA DPA</label>
     <label>Down payment <input type="number" step="0.5" min="3.5" max="50" data-assume="down_pct_pct"><span class="unit">%</span></label>
     <label>Closing costs <input type="number" step="0.5" min="0" max="10" data-assume="closing_pct_pct"><span class="unit">%</span></label>
     <label>Vacancy + repair reserve <input type="number" step="1" min="0" max="50" data-assume="reserve_pct_pct"><span class="unit">% of rent</span></label>
     <label>Rent factor <input type="number" step="0.05" min="0.3" max="2" data-assume="rent_factor"><span class="unit">× FMR</span></label>
-    <label>Target cash flow <input type="number" step="50" data-assume="target"><span class="unit">$/mo</span></label>
+    <label>Target cash flow <input type="number" step="25" data-assume="target"><input type="range" min="-500" max="1500" step="25" data-range-for="target" data-range-kind="assume"><span class="unit">$/mo · sets the "price for target" column</span></label>
     <label>Tax rate override <input type="number" step="0.01" min="0" max="6" data-assume="tax_rate_pct" placeholder="county default"><span class="unit">%/yr</span></label>
     <label>Insurance override <input type="number" step="10" min="0" data-assume="insurance" placeholder="by units"><span class="unit">$/mo</span></label>
     <label>Utilities override <input type="number" step="10" min="0" data-assume="utilities" placeholder="by units"><span class="unit">$/mo</span></label>

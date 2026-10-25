@@ -7,28 +7,33 @@
     <div class="chips" id="county-filter">
       {% for c in page.counties %}<label class="chip"><input type="checkbox" data-filter="county" value="{{ c }}" checked> {{ c }}</label>{% endfor %}
     </div>
-    <label>Max price <input type="number" step="5000" data-filter="max_price" value="250000"></label>
+    <label>Max price <input type="number" step="5000" data-filter="max_price" placeholder="any — the profit screen decides"></label>
     <label>Min price <input type="number" step="5000" data-filter="min_price" placeholder="any"></label>
     <div class="chips">
       <label class="chip"><input type="checkbox" data-filter="units" value="2" checked> 2 units</label>
       <label class="chip"><input type="checkbox" data-filter="units" value="3" checked> 3</label>
       <label class="chip"><input type="checkbox" data-filter="units" value="4" checked> 4</label>
       <label class="chip"><input type="checkbox" data-filter="units" value="5+" checked> 5+</label>
-      <label class="chip"><input type="checkbox" data-filter="units" value="?" checked> unknown</label>
+      <label class="chip"><input type="checkbox" data-filter="units" value="?" checked> unknown / assumed</label>
     </div>
-    <label>Min cash flow <input type="number" step="50" data-filter="min_cashflow" placeholder="any"><span class="unit">$/mo</span></label>
+    <div class="group-title">Profit screen <span class="muted small">against the FHA payment set in the panel below</span></div>
+    <label>Min monthly cash flow after reserves <input type="number" step="25" data-filter="min_cashflow" value="0"><input type="range" min="-500" max="1500" step="25" data-range-for="min_cashflow" data-range-kind="filter"><span class="unit">$/mo · tenant rent − reserve − PITI − shared utilities</span></label>
+    <label class="check"><input type="checkbox" data-filter="fha_eligible" checked> price within the FHA loan limit for its unit count</label>
+    <label class="check"><input type="checkbox" data-filter="self_sufficient" checked> 3–4 units must pass the self-sufficiency test</label>
+    <label class="check"><input type="checkbox" data-filter="keep_assumed" checked> keep assumed-unit rows regardless (count not confirmed)</label>
     <label>Search <input type="search" data-filter="q" placeholder="address, city, zip, text"></label>
     <label class="check"><input type="checkbox" data-filter="hide_pending" checked> hide pending / contingent</label>
     <label class="check"><input type="checkbox" data-filter="starred"> starred only</label>
     <label class="check"><input type="checkbox" data-filter="show_hidden"> show hidden</label>
     <label class="check"><input type="checkbox" data-filter="has_photo"> with photo only</label>
+    <button class="btn tiny" id="btn-reset-filters">reset filters</button>
   </div>
 </details>
 {% endblock %}
 {% block content %}
 <div class="toolbar">
   <div class="view-toggle"><button class="btn tiny active" data-view="table">table</button><button class="btn tiny" data-view="cards">cards</button></div>
-  <div class="muted small">Click a row for the FHA breakdown, rents per unit, photos and links. ★ stars, ✎ edits units/rents.</div>
+  <div class="muted small">Rows are screened by projected cash flow under the FHA assumptions, not by a price cap: an expensive building stays if its rents carry it. Click a row for the breakdown, rents per unit, photos and links. ★ stars, ✎ edits units/rents.</div>
 </div>
 <div id="results"></div>
 {% endblock %}

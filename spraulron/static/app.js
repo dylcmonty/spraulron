@@ -4,7 +4,7 @@
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
   const LS_A = 'spraulron.assumptions.v1';
-  const LS_F = `spraulron.filters.${PAGE.kind}.v1`;
+  const LS_F = `spraulron.filters.${PAGE.kind}.v2`;
   const state = { rows: [], sources: [], rates: {}, warnings: [], assumptions: {}, filters: {}, sort: null, view: 'table', open: new Set(), map: null, layer: null, loading: false, rentTable: null };
 
   // ---------- formatting
@@ -20,6 +20,17 @@
   // ---------- persistence
   const loadJSON = (k, def) => { try { return Object.assign({}, def, JSON.parse(localStorage.getItem(k) || '{}')); } catch { return def; } };
   const saveJSON = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { } };
+
+  // ---------- range sliders paired with number inputs
+  const rangePairs = kind => $$(`[data-range-for][data-range-kind="${kind}"]`).map(rg => [rg, $(`[data-${kind}="${rg.dataset.rangeFor}"]`)]).filter(([, t]) => t);
+  const syncRanges = kind => rangePairs(kind).forEach(([rg, t]) => { if (t.value !== '') rg.value = t.value; });
+  function bindRanges(kind) {
+    rangePairs(kind).forEach(([rg, target]) => {
+      rg.addEventListener('input', () => { target.value = rg.value; target.dispatchEvent(new Event('input', { bubbles: true })); });
+      target.addEventListener('input', () => { if (target.value !== '') rg.value = target.value; });
+    });
+    syncRanges(kind);
+  }
 
   // ---------- assumptions panel
   const defaultAssumptions = () => ({ rate_pct: '', dpa: false, down_pct_pct: PAGE.fha.down_payment_pct * 100, closing_pct_pct: PAGE.fha.closing_cost_pct * 100, reserve_pct_pct: PAGE.fha.vacancy_repair_reserve_pct * 100, rent_factor: PAGE.fha.market_rent_factor, target: PAGE.fha.target_cashflow, tax_rate_pct: '', insurance: '', utilities: '' });
@@ -45,7 +56,8 @@
       el.addEventListener('input', () => { state.assumptions[k] = el.type === 'checkbox' ? el.checked : el.value; saveJSON(LS_A, state.assumptions); debouncedLoad(); });
     });
     $('#btn-reset-assumptions').addEventListener('click', () => { state.assumptions = defaultAssumptions(); saveJSON(LS_A, state.assumptions); bindValues(); load(); });
-    function bindValues() { $$('[data-assume]').forEach(el => { const k = el.dataset.assume; if (el.type === 'checkbox') el.checked = !!state.assumptions[k]; else el.value = state.assumptions[k] ?? ''; }); }
+    function bindValues() { $$('[data-assume]').forEach(el => { const k = el.dataset.assume; if (el.type === 'checkbox') el.checked = !!state.assumptions[k]; else el.value = state.assumptions[k] ?? ''; }); syncRanges('assume'); }
+    bindRanges('assume');
   }
 
   // ---------- filters
@@ -72,6 +84,9 @@
       el.addEventListener('input', () => { readFilters(); if (k === 'include_completed') load(); else render(); });
     });
     readFilters();
+    bindRanges('filter');
+    const reset = $('#btn-reset-filters');
+    if (reset) reset.addEventListener('click', () => { try { localStorage.removeItem(LS_F); } catch { } location.reload(); });
   }
 
   // ---------- data
@@ -88,6 +103,8 @@
       const data = await r.json();
       state.rows = data.rows || []; state.sources = data.sources || []; state.rates = data.rates || {}; state.warnings = data.warnings || []; state.rentTable = data.rent_table || null;
       $('#rate-note').textContent = data.rates?.fha_no_dpa ? `· OHFA FHA ${(data.assumptions.rate * 100).toFixed(3)}%${data.assumptions.with_dpa ? ' (with DPA)' : ''} · updated ${data.rates.updated || 'n/a'}` : '';
+      const rateRange = $('[data-range-for="rate_pct"]');
+      if (rateRange && (state.assumptions.rate_pct === '' || state.assumptions.rate_pct == null) && data.assumptions?.rate) rateRange.value = (data.assumptions.rate * 100).toFixed(3);
     } catch (e) {
       state.warnings = [`Could not load data: ${e.message}`];
     }
@@ -113,6 +130,8 @@
     $('#warnings').innerHTML = state.warnings.map(w => `<div class="warn-item">${esc(w)}</div>`).join('');
   }
 
+  const unitsLabel = r => !r.units_final ? 'units ?' : r.units_assumed ? `${r.units_final} units?` : `${r.units_final} units`;
+
   // ---------- filtering + sorting
   function filtered() {
     const f = state.filters, q = (f.q || '').toLowerCase().trim();
@@ -126,8 +145,14 @@
         if (f.max_price && r.price && r.price > Number(f.max_price)) return false;
         if (f.min_price && r.price && r.price < Number(f.min_price)) return false;
         if (f.has_photo && !r.photo) return false;
-        if (f.units) { const u = r.units_final; const key = !u ? '?' : u >= 5 ? '5+' : String(u); if (!f.units.includes(key)) return false; }
-        if (f.min_cashflow !== '' && f.min_cashflow != null && r.fha && r.fha.cash_flow != null && r.fha.cash_flow < Number(f.min_cashflow)) return false;
+        if (f.units) { const u = r.units_final; const key = (!u || r.units_assumed) ? '?' : u >= 5 ? '5+' : String(u); if (!f.units.includes(key)) return false; }
+        // Profit screen: judged on the modeled numbers, never on a price cap. Rows whose unit count is only
+        // assumed can't be judged, so they stay when keep_assumed is on.
+        if (!(r.units_assumed && f.keep_assumed)) {
+          if (f.min_cashflow !== '' && f.min_cashflow != null && r.fha && r.fha.cash_flow != null && r.fha.cash_flow < Number(f.min_cashflow)) return false;
+          if (f.fha_eligible && r.fha && r.fha.within_loan_limit === false) return false;
+          if (f.self_sufficient && r.fha && r.fha.self_sufficiency_pass === false) return false;
+        }
       } else {
         if (f.sale_type && !f.sale_type.includes(r.sale_type)) return false;
         if (f.hide_vacant && r.is_vacant_lot) return false;
@@ -161,9 +186,10 @@
     const el = $('#summary');
     if (PAGE.kind === 'market') {
       const pos = rows.filter(r => r.fha?.cash_flow != null && r.fha.cash_flow >= 0).length;
-      const unknown = rows.filter(r => !r.units_final).length;
+      const unknown = rows.filter(r => !r.units_final || r.units_assumed).length;
+      const screened = rows.length - unknown;
       const med = rows.map(r => r.price).filter(Boolean).sort((a, b) => a - b); const m = med.length ? med[Math.floor(med.length / 2)] : null;
-      el.innerHTML = `<span><b>${rows.length}</b> listings shown of ${state.rows.length}</span><span><b class="pos">${pos}</b> cash-flow positive (model)</span><span><b>${unknown}</b> units unknown</span><span>median price <b>${money(m)}</b></span>${state.rentTable ? `<span class="muted">rents: ${esc(state.rentTable.source)}${state.rentTable.year ? ' FY' + state.rentTable.year : ''}</span>` : ''}`;
+      el.innerHTML = `<span><b>${rows.length}</b> shown of ${state.rows.length} · <b>${screened}</b> pass the profit screen</span><span><b class="pos">${pos}</b> cash-flow positive (model)</span><span><b>${unknown}</b> unit count assumed</span><span>median price <b>${money(m)}</b></span>${state.rentTable ? `<span class="muted">rents: ${esc(state.rentTable.source)}${state.rentTable.year ? ' FY' + state.rentTable.year : ''}</span>` : ''}`;
     } else {
       const byType = {}; rows.forEach(r => { byType[r.sale_type] = (byType[r.sale_type] || 0) + 1; });
       const bids = rows.map(r => r.opening_bid).filter(Boolean).sort((a, b) => a - b); const m = bids.length ? bids[Math.floor(bids.length / 2)] : null;
@@ -186,7 +212,7 @@
       case 'photo': return r.photo ? `<img class="thumb" loading="lazy" referrerpolicy="no-referrer" src="${esc(r.photo)}" alt="">` : `<a class="thumb" href="${esc(r.links?.google_maps || '#')}" target="_blank" rel="noopener" title="map"></a>`;
       case 'address': return `<div class="addr"><a href="${esc(r.links?.source || r.url || r.links?.zillow || '#')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${esc(r.address)}</a><div class="sub">${esc([r.city, r.zip].filter(Boolean).join(' '))} · ${esc(r.county || '')}${PAGE.kind === 'market' ? ` · <span class="badge">${esc(r.source_label)}</span>${r.status && !/for_sale/i.test(r.status) ? `<span class="badge warn">${esc(r.status.toLowerCase())}</span>` : ''}` : ''}</div></div>`;
       case 'price': return money(r.price);
-      case 'units': return r.units_final ? `<span class="badge ${r.units_source === 'override' ? 'ok' : r.units_source === 'text' ? 'warn' : ''}" title="units from ${esc(r.units_source)}">${r.units_final}</span>` : '<span class="badge bad">?</span>';
+      case 'units': return !r.units_final ? '<span class="badge bad">?</span>' : r.units_assumed ? `<span class="badge bad" title="${esc((r.flags || []).find(f => f.startsWith('units assumed')) || 'unit count assumed')} — click ✎ to set it">${r.units_final}?</span>` : `<span class="badge ${r.units_source === 'override' ? 'ok' : r.units_source === 'text' ? 'warn' : ''}" title="units from ${esc(r.units_source)}">${r.units_final}</span>`;
       case 'beds': return `${r.beds ?? '—'} / ${r.baths ?? '—'}`;
       case 'sqft': return num(r.sqft); case 'year': return r.year_built || '—'; case 'dom': return r.days_on_market ?? '—';
       case 'rent': return r.tenant_rent != null ? money(r.tenant_rent) : '—';
@@ -215,7 +241,7 @@
     bindRowEvents();
   }
   function renderCards(rows) {
-    $('#results').innerHTML = rows.length ? `<div class="cards">${rows.map(r => `<div class="card" data-id="${esc(r.id)}">${r.photo ? `<img loading="lazy" referrerpolicy="no-referrer" src="${esc(r.photo)}" alt="">` : '<div class="thumb" style="width:100%;height:160px"></div>'}<div class="body"><div class="price">${money(r.price)} <span class="badge">${r.units_final ? r.units_final + ' units' : 'units ?'}</span></div><div>${esc(r.address)}, ${esc(r.city || '')}</div><div class="muted">${r.beds ?? '—'} bd · ${r.baths ?? '—'} ba · ${num(r.sqft)} sqft · ${r.year_built || '—'}</div><div>tenant rent ${money(r.tenant_rent)} · PITI ${money(r.fha?.piti)} · cash flow ${r.fha?.cash_flow != null ? `<span class="${r.fha.cash_flow >= 0 ? 'pos' : 'neg'}">${money(r.fha.cash_flow)}</span>` : '—'}</div></div>${state.open.has(r.id) ? `<div class="body">${detail(r)}</div>` : ''}</div>`).join('')}</div>` : '<div class="empty">Nothing matches the current filters.</div>';
+    $('#results').innerHTML = rows.length ? `<div class="cards">${rows.map(r => `<div class="card" data-id="${esc(r.id)}">${r.photo ? `<img loading="lazy" referrerpolicy="no-referrer" src="${esc(r.photo)}" alt="">` : '<div class="thumb" style="width:100%;height:160px"></div>'}<div class="body"><div class="price">${money(r.price)} <span class="badge">${unitsLabel(r)}</span></div><div>${esc(r.address)}, ${esc(r.city || '')}</div><div class="muted">${r.beds ?? '—'} bd · ${r.baths ?? '—'} ba · ${num(r.sqft)} sqft · ${r.year_built || '—'}</div><div>tenant rent ${money(r.tenant_rent)} · PITI ${money(r.fha?.piti)} · cash flow ${r.fha?.cash_flow != null ? `<span class="${r.fha.cash_flow >= 0 ? 'pos' : 'neg'}">${money(r.fha.cash_flow)}</span>` : '—'}</div></div>${state.open.has(r.id) ? `<div class="body">${detail(r)}</div>` : ''}</div>`).join('')}</div>` : '<div class="empty">Nothing matches the current filters.</div>';
     bindRowEvents();
   }
   function bindRowEvents() {
@@ -254,7 +280,7 @@
         <tr><td>Price for ${money(q.target_cashflow)}/mo</td><td>${money(q.target_price)}</td></tr>
         <tr><td>Self-sufficiency (75% of ${money(q.all_units_rent)} ≥ PITI)</td><td>${q.self_sufficiency_pass == null ? 'n/a (2 units)' : q.self_sufficiency_pass ? '<span class="pos">pass</span>' : '<span class="neg">fail</span>'}</td></tr>
         <tr><td>Within FHA ${r.units_final || 1}-unit limit</td><td>${q.within_loan_limit == null ? '—' : q.within_loan_limit ? 'yes' : '<span class="neg">no</span>'}</td></tr></table>` : '<div class="muted">No price on this listing.</div>';
-      const units = (r.unit_list || []).length ? `<table class="kv">${r.unit_list.map((u, i) => `<tr><td>Unit ${i + 1} · ${u.bedrooms ?? '?'} bd ${u.owner_occupied ? '<span class="badge ok">you live here</span>' : ''}<div class="muted small">${esc(u.rent_source)}</div></td><td>${money(u.rent)}</td></tr>`).join('')}<tr class="total"><td>All units</td><td>${money(r.all_units_rent)}</td></tr></table>` : '<div class="muted">Units unknown: set the unit count to estimate rents.</div>';
+      const units = (r.unit_list || []).length ? `${r.units_assumed ? '<div class="warn-item">Unit count is a guess from baths/beds, so these rents are a projection only. Click ✎ to set the real count.</div>' : ''}<table class="kv">${r.unit_list.map((u, i) => `<tr><td>Unit ${i + 1} · ${u.bedrooms ?? '?'} bd ${u.owner_occupied ? '<span class="badge ok">you live here</span>' : ''}<div class="muted small">${esc(u.rent_source)}</div></td><td>${money(u.rent)}</td></tr>`).join('')}<tr class="total"><td>All units</td><td>${money(r.all_units_rent)}</td></tr></table>` : '<div class="muted">Units unknown: set the unit count to estimate rents.</div>';
       const photos = (r.photos || []).slice(0, 12).map(p => `<a href="${esc(p)}" target="_blank" rel="noopener"><img loading="lazy" referrerpolicy="no-referrer" src="${esc(p)}" alt=""></a>`).join('');
       return `<div class="detail-grid">
         <div><h4>FHA scenario</h4>${fhaTable}</div>
@@ -323,7 +349,7 @@
       if (r.lat == null || r.lon == null) return;
       const color = PAGE.kind === 'market' ? (r.fha?.cash_flow == null ? '#777' : r.fha.cash_flow >= 0 ? '#1a7f37' : '#c62828') : (TYPE_COLORS[r.sale_type] || '#777');
       const m = L.circleMarker([r.lat, r.lon], { radius: 7, color, weight: 1.5, fillColor: color, fillOpacity: .75 });
-      const label = PAGE.kind === 'market' ? `${money(r.price)} · ${r.units_final ? r.units_final + ' units' : 'units ?'} · cash flow ${money(r.fha?.cash_flow)}` : `${esc(r.sale_type)} · ${fdate(r.sale_date)} · bid ${money(r.opening_bid)}`;
+      const label = PAGE.kind === 'market' ? `${money(r.price)} · ${unitsLabel(r)} · cash flow ${money(r.fha?.cash_flow)}` : `${esc(r.sale_type)} · ${fdate(r.sale_date)} · bid ${money(r.opening_bid)}`;
       m.bindPopup(`<b>${esc(r.address)}</b><br>${esc(r.city || '')} · ${esc(r.county)}<br>${label}<br><a href="#" data-goto="${esc(r.id)}">open row</a>`);
       m.on('popupopen', (e) => { const a = e.popup.getElement().querySelector('[data-goto]'); if (a) a.addEventListener('click', (ev) => { ev.preventDefault(); state.open.add(r.id); render(); const d = $(`[data-id="${CSS.escape(r.id)}"]`); if (d) d.scrollIntoView({ block: 'center' }); }); });
       state.layer.addLayer(m); pts.push([r.lat, r.lon]);

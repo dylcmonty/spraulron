@@ -54,6 +54,22 @@ County and HUD/OHFA pages are public records fetched with ordinary HTTP at low v
 Realtor.com client; keep refresh intervals modest and treat it as a convenience that may break. RentCast's API terms allow
 local storage and display. Nothing here is underwriting, legal advice or a title search.
 
+## Profit screen
+
+The Market filters default to a cash-flow test rather than a price cap, following the analysis: a listing shows when
+tenant rent minus the 20% reserve, the FHA PITI at the panel's rate/down payment, and shared utilities is at least the
+"min monthly cash flow" slider (default $0, i.e. net-positive), its price is within the FHA loan limit for its unit count, and a
+3–4 unit passes the self-sufficiency test (75% of all-unit rent ≥ PITI). A $400k fourplex whose rents carry it therefore stays
+while a $150k duplex that doesn't drops out. Move the rate or target sliders and every row recomputes. Rows whose unit count is
+only assumed are kept regardless (toggle) because they can't be judged yet; the "max price" box is still there if you want a cap.
+
+## Unit counts
+
+Realtor.com rarely states the unit count, so it is parsed from the description (duplex, four-unit, "Cleveland double",
+"both units", "Unit 1 … Unit 3", "2nd floor unit"). When nothing matches, the app assumes one unit per bathroom (else beds ÷ 2,
+clamped to 2–4) so rent and cash flow still show; those rows carry a `2?`-style badge and sit in the "unknown / assumed" filter.
+Set the real count with ✎ and the projection recomputes.
+
 ## Layout
 
 ```
