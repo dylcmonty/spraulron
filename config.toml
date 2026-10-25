@@ -1,0 +1,82 @@
+# spraulron configuration. Values here are defaults; FHA assumptions can be changed in the browser.
+
+[app]
+host = "127.0.0.1"
+port = 8000
+# RealAuction (sheriffsaleauction.ohio.gov) returns 403 to non-browser user agents, so a browser string is used.
+user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
+cache_dir = ".cache"
+data_dir = "data"
+cache_prune_days = 7
+auction_lookahead_days = 75
+
+[counties]
+names = ["Cuyahoga", "Summit", "Stark"]
+
+[counties.fips]
+Cuyahoga = "39035"
+Summit = "39153"
+Stark = "39151"
+
+[map]
+center = [41.25, -81.55]
+zoom = 9
+# One RentCast radius query centred here covers all three counties (max 100 mi).
+rentcast_radius_miles = 40
+
+[ttl_hours]
+homeharvest = 6
+rentcast = 24
+realauction = 3
+stark_sheriff = 6
+cuyahoga_docket = 6
+cuyahoga_forfeited = 24
+cuyahoga_landbank = 24
+ohfa_rates = 12
+hud_fmr = 720
+
+[fha]
+# Used only if the live OHFA rate page cannot be read.
+rate_fallback = 0.07375
+rate_dpa_fallback = 0.08
+down_payment_pct = 0.035
+ufmip_pct = 0.0175
+annual_mip_pct = 0.0055
+annual_mip_pct_5pct_down = 0.005
+closing_cost_pct = 0.03
+reserve_months_3_4_units = 3
+vacancy_repair_reserve_pct = 0.20
+self_sufficiency_factor = 0.75
+market_rent_factor = 1.0
+target_cashflow = 300
+loan_term_months = 360
+# 2026 FHA forward loan limits, floor tier (applies to Cuyahoga, Summit and Stark).
+# Verify at https://entp.hud.gov/idapp/html/hicostlook.cfm
+loan_limits = { "1" = 541287, "2" = 693050, "3" = 837700, "4" = 1041125 }
+
+# Monthly building insurance allowance by unit count (underwriting estimate, not a quote).
+[fha.insurance_monthly]
+"1" = 150
+"2" = 200
+"3" = 250
+"4" = 300
+
+# Monthly owner-paid shared utilities (water/sewer/trash/common electric) by unit count.
+[fha.utilities_monthly]
+"1" = 50
+"2" = 75
+"3" = 125
+"4" = 175
+
+# Effective annual property tax as a fraction of purchase price. ESTIMATES - verify per parcel.
+# Cleveland city (CMSD) published ~2.29%; Cleveland Heights ~2.92%; Lakewood ~2.24%.
+[fha.tax_rate]
+default = 0.023
+Cuyahoga = 0.0229
+Summit = 0.0200
+Stark = 0.0160
+
+[fha.tax_rate_city]
+"Cleveland Heights" = 0.0292
+"Lakewood" = 0.0224
+"Cleveland" = 0.0229

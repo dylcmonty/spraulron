@@ -1,0 +1,12 @@
+{
+  "source": "estimate (no HUD token): rough NE Ohio benchmarks from Sept-Oct 2026 asking-rent reports",
+  "year": "2026",
+  "county_fmr": {
+    "Cuyahoga": [800, 950, 1150, 1400, 1600],
+    "Summit":   [750, 900, 1100, 1350, 1550],
+    "Stark":    [700, 825, 1000, 1250, 1450]
+  },
+  "zip_fmr": {},
+  "zip_county": {},
+  "notes": ["Set HUD_API_TOKEN in .env to replace these with official HUD Fair Market Rents by ZIP/county."]
+}

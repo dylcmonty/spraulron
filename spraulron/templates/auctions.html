@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Auctions · spraulron{% endblock %}
+{% block sidebar %}
+<details class="panel" open>
+  <summary>Filters</summary>
+  <div class="panel-body">
+    <div class="chips">
+      {% for c in page.counties %}<label class="chip"><input type="checkbox" data-filter="county" value="{{ c }}" checked> {{ c }}</label>{% endfor %}
+    </div>
+    <div class="chips">
+      <label class="chip"><input type="checkbox" data-filter="sale_type" value="Delinquent Tax" checked> Delinquent tax</label>
+      <label class="chip"><input type="checkbox" data-filter="sale_type" value="Mortgage Foreclosure" checked> Mortgage foreclosure</label>
+      <label class="chip"><input type="checkbox" data-filter="sale_type" value="Forfeited Land" checked> Forfeited land</label>
+      <label class="chip"><input type="checkbox" data-filter="sale_type" value="Land Bank" checked> Land bank</label>
+      <label class="chip"><input type="checkbox" data-filter="sale_type" value="Unknown" checked> other</label>
+    </div>
+    <label>From <input type="date" data-filter="date_from"></label>
+    <label>To <input type="date" data-filter="date_to"></label>
+    <label>Max opening bid <input type="number" step="5000" data-filter="max_bid" placeholder="any"></label>
+    <label>Search <input type="search" data-filter="q" placeholder="address, city, parcel, case"></label>
+    <label class="check"><input type="checkbox" data-filter="hide_vacant" checked> hide vacant lots</label>
+    <label class="check"><input type="checkbox" data-filter="hide_closed" checked> hide cancelled / closed</label>
+    <label class="check"><input type="checkbox" data-filter="include_undated" checked> include items without a sale date (forfeited / land bank)</label>
+    <label class="check"><input type="checkbox" data-filter="include_completed"> load recent completed Stark sales</label>
+  </div>
+</details>
+<details class="panel">
+  <summary>Link-only sources</summary>
+  <div class="panel-body small">
+    <a href="https://summit-county-oh-publicity.tolemi.com/" target="_blank" rel="noopener">Summit County Land Bank properties</a> (interactive app, no feed)<br>
+    <a href="https://www.starkcountyohio.gov/government/offices/auditor/resources_and_administration/auditors_sales.php" target="_blank" rel="noopener">Stark County Auditor forfeited-land sale</a> (annual PDF list)<br>
+    <a href="https://auctionscout.app/recap/summit-county" target="_blank" rel="noopener">AuctionScout: Summit sheriff-sale results history</a><br>
+    <a href="https://cpdocket.cp.cuyahogacounty.gov/SheriffSearch/" target="_blank" rel="noopener">Cuyahoga Clerk sheriff-sale search (results)</a><br>
+    <a href="https://sheriff.summitoh.net/pages/Sheriff-Sales-Information.html" target="_blank" rel="noopener">Summit Sheriff sale information</a>
+  </div>
+</details>
+{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div class="muted small">Sheriff sales are effectively cash purchases (deposit at sale, balance within 30 days). The FHA figures here are a comparison against market listings, not a financing plan. Click a row for the cash breakdown, links and a map.</div>
+</div>
+<div id="results"></div>
+{% endblock %}
