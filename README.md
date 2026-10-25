@@ -32,11 +32,12 @@ Other commands:
 .venv/bin/python -m pytest
 ```
 
-## Tokens (optional, both free)
+## Tokens (optional)
 
 * `HUD_API_TOKEN` — HUD USER Fair Market Rent API (https://www.huduser.gov/portal/dataset/fmr-api.html). Without it the app uses
   the rough estimates in `data/fmr_fallback.json` and says so in a banner.
-* `RENTCAST_API_KEY` — RentCast developer plan (50 requests/month). The adapter runs one radius query per refresh, cached 24 h.
+* `RENTCAST_API_KEY` — RentCast developer plan (50 requests/month; RentCast asks for a credit card at signup even on the free
+  plan). The adapter is off unless the key is present and runs one radius query per refresh, cached 24 h.
 
 ## FHA model
 

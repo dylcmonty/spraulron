@@ -167,8 +167,6 @@ class Services:
         if rent_status:
             statuses.append(rent_status)
         warnings = [f"{st['label']}: {st['error']}" for st in statuses if st.get("error")]
-        if not self.settings.rentcast_api_key:
-            warnings.append("RentCast adapter idle: set RENTCAST_API_KEY in .env to enable it.")
         if not table.source.startswith("HUD"):
             warnings.append("Rents are rough estimates: set HUD_API_TOKEN in .env for official Fair Market Rents.")
         rows: list[dict] = []
