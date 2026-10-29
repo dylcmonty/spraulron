@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Market · spraulron{% endblock %}
+{% block sidebar %}
+<details class="panel" open>
+  <summary>Filters</summary>
+  <div class="panel-body">
+    <div class="chips" id="county-filter">
+      {% for c in page.counties %}<label class="chip"><input type="checkbox" data-filter="county" value="{{ c }}" checked> {{ c }}</label>{% endfor %}
+    </div>
+    <label>Max price <input type="number" step="5000" data-filter="max_price" placeholder="any"></label>
+    <label>Min price <input type="number" step="5000" data-filter="min_price" placeholder="any"></label>
+    <div class="chips">
+      <label class="chip"><input type="checkbox" data-filter="units" value="2" checked> 2 units</label>
+      <label class="chip"><input type="checkbox" data-filter="units" value="3" checked> 3</label>
+      <label class="chip"><input type="checkbox" data-filter="units" value="4" checked> 4</label>
+      <label class="chip"><input type="checkbox" data-filter="units" value="5+" checked> 5+</label>
+      <label class="chip"><input type="checkbox" data-filter="units" value="?" checked> unknown / assumed</label>
+    </div>
+    <label>Rent per unit, projected average <div class="pair"><input type="number" step="25" data-filter="min_rent_unit" placeholder="min"><input type="number" step="25" data-filter="max_rent_unit" placeholder="max"></div><span class="unit">$/mo</span></label>
+    <label>Max down payment needed <input type="number" step="500" data-filter="max_down" placeholder="any"><span class="unit">$ · price × the down-payment % below</span></label>
+    <label>Search <input type="search" data-filter="q" placeholder="address, city, zip, text"></label>
+    <label class="check"><input type="checkbox" data-filter="hide_pending" checked> hide pending / contingent</label>
+    <label class="check"><input type="checkbox" data-filter="starred"> starred only</label>
+    <label class="check"><input type="checkbox" data-filter="show_hidden"> show hidden</label>
+    <label class="check"><input type="checkbox" data-filter="has_photo"> with photo only</label>
+    <button class="btn tiny" id="btn-reset-filters">reset filters</button>
+  </div>
+</details>
+{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div class="view-toggle"><button class="btn tiny active" data-view="table">table</button><button class="btn tiny" data-view="cards">cards</button></div>
+  <div class="muted small">Filters act on price, projected rent per unit and down payment only; the FHA panel feeds the computed columns. Click a row for the likely sale-price range, rent range per unit, FHA breakdown, photos and links. ★ stars, ✎ edits units/rents.</div>
+</div>
+<div id="results"></div>
+{% endblock %}

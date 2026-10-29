@@ -1,0 +1,458 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"  lang="en" xml:lang="en">
+<head><title>
+	Delinquent Tax and Tax Lien Sales - Stark County Sheriff
+</title><meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema"><meta http-equiv="CACHE-CONTROL" content="NO-CACHE"><link href="sheriff_common/styles/screen.css" rel="stylesheet" type="text/css" /><link href="Styles.css" rel="Stylesheet" type="text/css" /><link href="https://fonts.googleapis.com/css?family=Rosario" rel="stylesheet" />
+    <meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR" />
+    <meta content="C#" name="CODE_LANGUAGE" />
+    <meta content="JavaScript" name="vs_defaultClientScript" />
+    <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema" />
+    <style type="text/css">
+        .style1 {
+            text-decoration: underline;
+        }
+    </style>
+
+             <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZRVSGRZXK5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-ZRVSGRZXK5');
+    </script>
+   </head>
+<body>
+  
+     
+<header>
+	<a href="#main-content" class="skip" tabindex="1">Skip to main content</a>
+
+
+	<div id="header-in">
+
+		<a href="https://www.starkcountyohio.gov/"  aria-label="stark county ohio web site">
+            <div id="logo-wrap" role="img" aria-label="Stark County Ohio logo">
+				<span class="visually-hidden">Stark County Ohio homepage</span>
+                
+
+            </div>
+		</a>
+		<div id="header-right">
+			<nav id="hamnav">
+
+
+
+				<ul id="nav">
+					<li>
+						<a href="https://www.starkcountyohio.gov/">Home</a>
+					</li>
+					<li>
+						<a href="https://www.starkcountyohio.gov/residents/index.php">Residents</a>
+					</li>
+					<li>
+						<a href="https://www.starkcountyohio.gov/business/index.php">Business</a>
+					</li>
+					<li>
+						<a href="https://www.starkcountyohio.gov/government/index.php">Government</a>
+					</li>
+					<li>
+						<a href="https://www.starkcountyohio.gov/visitors/index.php">Visitors</a>
+					</li>
+					<li>
+						<a href="https://www.starkcountyohio.gov/i_want_to/index.php">I Want To</a>
+					</li>
+				</ul>
+
+			</nav>
+		</div><!--/#header-right-->
+
+	</div><!--/#header-in-->
+	<div id="whitebar">
+		<!--ITSD-21747 jxliu 5/21/2025 change the aria-label to match the content resolve accessibility issue-->
+		<a href="https://www.starkcountyohio.gov/sheriff" aria-label="STARK COUNTY SHERIFF">
+			<div id="police-logo">
+
+			</div> <br /><span class="big-font">STARK</span><br />
+			<span class="sm-font">COUNTY SHERIFF</span>
+
+		</a>
+
+	</div>
+	<div id="dept">SHERIFF</div>
+</header>
+
+<div id="right2">
+	<!--
+	<div id="sidenav">
+		<ul>
+			<li>
+				<a href="https://www.starkcountyohio.gov/sheriff">
+					Back To Sheriff Home
+				</a>
+			</li>
+		</ul>
+	</div>-->
+<form name="aspnetForm" method="post" action="./DelinquentTaxSales.aspx" id="aspnetForm" role="form">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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" />
+
+<script type="text/javascript">
+<!--
+var theForm = document.forms['aspnetForm'];
+if (!theForm) {
+    theForm = document.aspnetForm;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+// -->
+</script>
+
+
+<script src="/WebResource.axd?d=P910uw4RbaAtB4KSzYgtw8nfFMQ0r4gIqomlp5hVItRueEJFPwQ6bGYdcX2bFeyPI7yzMHJ_8Fu3Gr22F85Epi9quIAcjKlYyXJ06IpYBpY1&amp;t=638901392248157332" type="text/javascript"></script>
+
+<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="764080D3" />
+<input type="hidden" name="__SCROLLPOSITIONX" id="__SCROLLPOSITIONX" value="0" />
+<input type="hidden" name="__SCROLLPOSITIONY" id="__SCROLLPOSITIONY" value="0" />
+<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAB4jRbO7ojPaqVQPMBcG05fkR7AcVCNLaGnq2YF/swe0CLMqjww5dttezk/e8b3KeSJno3vfnvySD0DGV1RmAeI5MoxLfdmI/Zh1HdmqGuusFNE7m35F0EkCiJ4hVF9wnpP7prGpLfY+KvZwD8h13zeFdeaKjlRDUAEKxHby+SaHEixqT4LTpnofOSrE1xmmhR1wnQn+0R6CDCAF2z6Go+lVqkLlQ3yeZaQDUbxuWMNkNO4N717WUtai1GhD4Gv34uX3Nzfu0QhA687h5UfiCAvXW2MtMvUM1CmgmufM7vpoJAJXPCXawwE+eB3fWCPu+Jy8lq2XDXxGoOwHFOwxhP2bKBNMsOsInkq/r86WNlZyZBAfjopeLWpDJUNF7f+DU0tRxjZzEuNHiUll8XSboD8XUiBAi+tjYJfQ0zON8NednJVYbmJkj9Mv2RzF6ldOKGVYUbBYKbBnJstXbvply7TTwq6216+APg0HuHywmE620JMbX4z2+jugB6cG4dBXOeM4oGdDdx8v4kHgLkaij8eJdRkcqoz1QcFtrw2YAh1nYTZtR2WJnc0bQdl9llXuRBafbiaxk5lJI6HShwBEliHGZ08KZJ9rxYzTpQZT+H1LcEXLrqWJLNj6bNs9jFynsSSOQwl9DB7pMYpBwOuFSscaSOvjejfffeYBpM27I79CHw==" />
+        <span style="position: absolute; right: 10px;">
+            
+        </span>
+        <div id="main-content" tabindex="-1" style="padding: 0px; margin: 0px">
+             <p style="color:#000;font-size:13px;font-weight:normal;border-top: 3px double #30547E;border-bottom: 3px double #30547E;
+background:#f2f2f2;padding:2px 10px 2px 10px;margin-bottom:0px; display:none;">The upcoming delinquent tax sales will be held at 10:00 A.M. on the 1st Tuesday of the 
+                 month at the following location: Arts Hall Building<br />
+<span style="padding-left:630px;">Stark County Fair Grounds</span><br />
+<span style="padding-left:630px;">305 Wertz Ave N.W.  
+Canton, Ohio 44708</span></p>
+            
+    <table id="Table1" cellspacing="1" cellpadding="1" width="100%" border="0">
+        <tr>
+            <td style="vertical-align:top;" >
+                
+<div id="left">
+<div id="sidenav">
+    <ul>
+        <li><a href="http://www.starkcountyohio.gov/sheriff">Sheriff Home</a></li>
+        <li><a href="SearchSales.aspx">Search Sheriff Sales</a></li>
+        <li><a href="Foreclosures.aspx">Sheriff Sale Lists</a></li>
+        <li><a href="DelinquentTaxSales.aspx">Delinquent Tax Sales</a></li>
+        <li><a href="TaxCertificateSales.aspx">Tax Certificate Sales</a></li>
+    </ul>
+</div>
+
+</div></td>
+            <td style="padding-top: 20px; background-image: url(images/back.jpg); ">
+                <h1>Delinquent Tax and Tax Lien Sales</h1>
+                <hr width="100%" size="1" />
+                <table>
+
+                 <tr>
+            <td style="vertical-align:top;padding-top: 10px; background-image: url(images/back.jpg);">
+                
+            </td>
+        </tr>
+        <tr>
+            <td  style="vertical-align:top;padding-top: 0px; background-image: url(images/back.jpg); padding-left: 10px;">
+                <span id="_ctl0_ContentPlaceHolder1_lblErrorMessage" style="color:Red;font-weight:bold;"></span></td>
+        </tr>
+        <tr>
+            <td style="vertical-align:top;padding-top: 5px; background-image: url(images/back.jpg); padding-left: 10px;">
+                <table class="Table2" cellspacing="1" cellpadding="5" border="0" width="100%">
+                    <tr>
+                        <td style="font-weight:bold;">Pending Sales:
+                        </td>
+                        <td style="padding-left: 10px;"><span id="_ctl0_ContentPlaceHolder1_lblCompletedSales" style="font-weight:bold;">Completed Delinquent Tax Sales</span>
+                            <select name="_ctl0:ContentPlaceHolder1:ddlCompletedSaleYear" onchange="javascript:setTimeout(&#39;__doPostBack(\&#39;_ctl0$ContentPlaceHolder1$ddlCompletedSaleYear\&#39;,\&#39;\&#39;)&#39;, 0)" language="javascript" id="_ctl0_ContentPlaceHolder1_ddlCompletedSaleYear" aria-labelledby="_ctl0_ContentPlaceHolder1_lblCompletedSales" style="font-family:Times New Roman;font-size:14px;">
+	<option selected="selected" value="2026">2026</option>
+	<option value="2025">2025</option>
+	<option value="2024">2024</option>
+	<option value="2023">2023</option>
+	<option value="2022">2022</option>
+	<option value="2021">2021</option>
+	<option value="2020">2020</option>
+	<option value="2019">2019</option>
+	<option value="2018">2018</option>
+	<option value="2017">2017</option>
+	<option value="2016">2016</option>
+	<option value="2015">2015</option>
+	<option value="2014">2014</option>
+	<option value="2013">2013</option>
+	<option value="2012">2012</option>
+	<option value="2011">2011</option>
+	<option value="2010">2010</option>
+	<option value="2009">2009</option>
+	<option value="2008">2008</option>
+	<option value="2007">2007</option>
+	<option value="2006">2006</option>
+	<option value="2005">2005</option>
+	<option value="2004">2004</option>
+	<option value="2003">2003</option>
+	<option value="2002">2002</option>
+	<option value="2001">2001</option>
+	<option value="2000">2000</option>
+	<option value="1999">1999</option>
+
+</select></td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:top;">
+                            <span id="_ctl0_ContentPlaceHolder1_lblPendingSalesListMessage" class="lblMsg"></span>
+                            <table id="_ctl0_ContentPlaceHolder1_dlPendingSales" class="dataListStyle" cellspacing="2" cellpadding="3" border="0">
+	<tr>
+		<td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=11/3/2026" style="color:#00135f;">11/3/2026</a><br/><br/>
+                                </td><td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=12/1/2026" style="color:#00135f;">12/1/2026</a><br/><br/>
+                                </td><td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=1/5/2027" style="color:#00135f;">1/5/2027</a><br/><br/>
+                                </td>
+	</tr>
+</table><br />
+                        </td>
+                        <td style="padding-left: 10px;vertical-align:top;">
+                            <span id="_ctl0_ContentPlaceHolder1_lblCompletedSalesListMessage" class="lblMsg"></span>
+                            <table id="_ctl0_ContentPlaceHolder1_dlCompletedSales" class="dataListStyle" cellspacing="0" border="0" style="border-collapse:collapse;">
+	<tr>
+		<td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=1/6/2026" style="color:#00135f;">1/6/2026</a><br/><br/>
+                                </td><td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=2/3/2026" style="color:#00135f;">2/3/2026</a><br/><br/>
+                                </td><td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=3/3/2026" style="color:#00135f;">3/3/2026</a><br/><br/>
+                                </td><td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=4/7/2026" style="color:#00135f;">4/7/2026</a><br/><br/>
+                                </td><td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=5/5/2026" style="color:#00135f;">5/5/2026</a><br/><br/>
+                                </td><td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=6/2/2026" style="color:#00135f;">6/2/2026</a><br/><br/>
+                                </td><td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=7/7/2026" style="color:#00135f;">7/7/2026</a><br/><br/>
+                                </td><td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=8/4/2026" style="color:#00135f;">8/4/2026</a><br/><br/>
+                                </td>
+	</tr><tr>
+		<td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=9/1/2026" style="color:#00135f;">9/1/2026</a><br/><br/>
+                                </td><td class="dataListInnerStyle">
+                                    <a href="DelinquentTaxSaleDetails.aspx?SALE_DATE=10/6/2026" style="color:#00135f;">10/6/2026</a><br/><br/>
+                                </td><td></td><td></td><td></td><td></td><td></td><td></td>
+	</tr>
+</table><br />
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="font-weight:bold;vertical-align:top;">Delinquent Tax Sale Totals for 
+                            <span id="_ctl0_ContentPlaceHolder1_lblSaleYear">2026</span></td>
+                    </tr>
+                    <tr>
+                        <td  colspan="2" style="vertical-align:top;">
+                            <table class="gridViewStyle" cellspacing="0" rules="all" border="1" id="_ctl0_ContentPlaceHolder1_dgMonthlySaleTotals" style="border-collapse:collapse;">
+	<tr class="gridViewHeaderStyle">
+		<td>Jan</td><td>Feb</td><td>Mar</td><td>Apr</td><td>May</td><td>Jun</td><td>Jul</td><td>Aug</td><td>Sep</td><td>Oct</td><td>Nov</td><td>Dec</td><td style="font-weight:bold;">Total</td>
+	</tr><tr class="gridViewInnerStyle">
+		<td>
+                                            <span>60,762.65</span>
+                                        </td><td>
+                                            <span>245,385.42</span>
+                                        </td><td>
+                                            <span>113,050.02</span>
+                                        </td><td>
+                                            <span>213,094.65</span>
+                                        </td><td>
+                                            <span>119,500.00</span>
+                                        </td><td>
+                                            <span>45,000.00</span>
+                                        </td><td>
+                                            <span>123,921.58</span>
+                                        </td><td>
+                                            <span>92,436.37</span>
+                                        </td><td>
+                                            <span>15,576.05</span>
+                                        </td><td>
+                                            <span>75,200.00</span>
+                                        </td><td>
+                                            <span>0.00</span>
+                                        </td><td>
+                                            <span>0.00</span>
+                                        </td><td style="font-weight:bold;">
+                                            <span>$1,103,926.74</span>
+                                        </td>
+	</tr>
+</table></td>
+                    </tr>
+                </table>
+                <br />
+            </td>
+        </tr>
+        <tr>
+            <td style="background-image: url(images/back.jpg);">
+                <hr width="98%" size="1" />
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left: 7px; padding-right: 7px; background-image: url(images/back.jpg);">
+         <p style="font-weight:bold; text-align:center;">TAX FORECLOSURE SALES </p>
+                <p align="left">
+                  The Sheriff's Office manages tax foreclosure sales on behalf of the Treasurer's Office.
+                    These sales occur on the first Tuesday of each month at 9:00 A.M. in the Event Hall of 
+                    the Stark County Office Building, located at 110 Central Plaza South, First Floor. 
+                    Please note that the Sheriff's Office serves solely as the auctioneer for the Court, 
+                    receiving directives from the Clerk of Courts via the Order of Sale. 
+                    Properties are not available for inspection, and the Sheriff's Office does not possess keys to any homes.
+                    All sheriff sales are conducted on an "AS IS" basis, and the Sheriff does not guarantee a clear title deed. To access case files for each tax foreclosure, individuals may visit the Clerk of Courts Office at the County Courthouse, where these records are available for public viewing from 8:30 A.M. to 4:30 P.M. daily. For information on the outstanding taxes due on a property, please contact the Stark County Treasurer's Office. 
+                    The Sheriff's Office can provide no further details beyond what is mentioned in the advertisements.      
+                </p>
+                <p>
+The properties do not undergo appraisal, and the Stark County Prosecutor's Office represents the 
+                    Treasurer of Stark County in determining the minimum bid. Sale announcements will be printed 
+                    in the Canton Repository for three consecutive Thursdays prior to the sale date. 
+                    Should a tax sale not attract any bids, it will be rescheduled for one month later,
+                    on the first Tuesday of the following month. 
+                    The Prosecutor's Office will inform the Sheriff's Office if there are any changes to the starting bid.
+                </p>
+                <p  style="font-weight:bold;text-align:center;">
+                  **HIGHEST BIDDER**
+                </p>
+              <p>
+                  **Purchaser's Responsibility:** As the highest bidder, 
+                  you are required to submit a deposit to the Treasurer's Office by 4:30 P.M. 
+                  on the sale day. The remaining balance is due within 30 days from the filing date of
+                  the confirmation of sale. The deposit should be 10% of the highest bid and may be
+                  in the form of a cashier's check or certified check made payable to the Stark County Treasurer.
+                  On sale day, please be prepared to provide the name for the deed, the tax mailing address, 
+                  your contact phone number, and a form of identification, such as a driver's license.
+              </p>
+                <p>
+**Attorney's Responsibility:** The Stark County Prosecutor is responsible 
+                    for preparing and filing the Confirmation of Sale and the Deed with 
+                    the Clerk of Courts and the Judge after the balance is paid.
+Once the deed is received from the Prosecutor, the Sheriff will review and record it.
+                    You will be notified when the deed is ready for collection,
+                    but we cannot provide a specific timeline for this process.
+
+                </p>
+                <p>
+Please be aware that the property ownership does not transfer until the deed is picked up. 
+                    If there are individuals still residing in the property, 
+                    it is your responsibility to arrange for their removal. 
+                    You may contact the Stark County Clerk of Courts to apply for a Writ of Possession to 
+                    be executed by the Sheriff's Office or initiate eviction proceedings through the Canton Municipal Court.
+                </p>
+                <p>
+For further details, please visit our website at <a href="https://www.starkcountyohio.gov/sheriff" target="_blank" style="text-decoration: underline !important;">www.starkcountyohio.gov/sheriff</a> select "Sheriff Sales", 
+                    and then navigate to "Delinquent Tax Sales".
+                </p>
+                <p style="font-weight:bold;text-align:center;">
+**ADDITONAL INFORMATION**
+</p>
+                <p>
+                    1.	**Delinquent Tax Sheriff Sales** - The minimum bid required for these sales 
+                    includes the total amount of taxes owed up to the date of sale, as well as any related 
+                    costs incurred throughout the case. Note that amounts due to lien holders are not included
+                    in this minimum bid. If the property is sold for an amount exceeding the minimum bid,
+                    lien holders who have responded to the complaint may receive partial or full payment 
+                    for their outstanding liens. Upon the completion of a sheriff sale, any lien against 
+                    the property will be released. If there is an active foreclosure, you can visit Stark County 
+                    Online Case Docket <a href="https://www.starkcountyohio.gov/clerk" target="_blank" style="text-decoration: underline !important;">www.starkcountyohio.gov/clerk</a>
+                    to access the "Online Case Docket inquiry," 
+                    which will allow you to view title work and any pleadings filed related to the case, including the values of any liens on the property. 
+                    If there is no active foreclosure, a title search must be conducted on the property.
+                </p>
+                <p>
+                    2.	**Private Sale Option** - You are permitted to negotiate a private sale for a property scheduled for sheriff sale, and payoff amounts can be provided. However, 
+                    please be advised that for the sale to be canceled, all taxes and related costs must be paid in full.
+                </p>
+                <p>
+                3.	There is not a list available for properties delinquent for $5000.00 or less. 
+                    If you have a specific vacant lot of parcels, you have an interest in, 
+                    you can visit the website <a href="https://www.starkcountylandbank.org/" target="_blank" style="text-decoration: underline !important;">www.starkcountylandbank.org</a>
+
+
+
+                </p>
+                <p>&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+           
+            <td valign="top" style="padding-top: 0px; background-image: url(images/back.jpg); ">
+                
+<table width="100%">
+    <tr>
+        <td>
+          
+            <br />
+            <b>Email To: </b><a href="mailto:STARKSALES@STARKCOUNTYOHIO.GOV?Subject=Sheriff%20Sales" target="_top">STARKSALES@STARKCOUNTYOHIO.GOV</a><br />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Version <strong>3.2.11</strong></p>
+        </td>
+    </tr>
+</table>
+
+            </td>
+        </tr>
+                </table>
+            </td>
+        </tr>
+       
+    </table>
+
+        </div>
+        <div>
+        </div>
+    
+
+<script type="text/javascript">
+<!--
+
+theForm.oldSubmit = theForm.submit;
+theForm.submit = WebForm_SaveScrollPositionSubmit;
+
+theForm.oldOnSubmit = theForm.onsubmit;
+theForm.onsubmit = WebForm_SaveScrollPositionOnSubmit;
+// -->
+</script>
+</form>
+     <footer>
+	<div id="footer-in">
+		<div id="footer-left">
+
+		</div><!--/#footer-left-->
+		<div id="footer-right">
+			<div id="footer-links">
+				<h2>Stark County, OH</h2>
+				<ul id="footer-links-list">
+					<li><a href="https://www.starkcountyohio.gov/government/agency_directory.php" class="footer-link">Agency Directory</a></li>
+					<li>|</li>
+
+					
+					<li><a href="https://www.starkcountyohio.gov/i_want_to/contact_someone.php" class="footer-link">Contact Someone</a></li>
+                    <li>|</li>
+					<li><a href="https://www.starkcountyohio.gov/i_want_to/apply_for/employment.php" class="footer-link">Employment Opportunities</a> </li>
+					<li> |</li>
+					<li><a href="https://www.starkcountyohio.gov/web_accessibility/index.php" class="footer-link">Web Accessibility</a></li>
+				</ul>
+			</div><!--/#footer-links-->
+
+		</div><!--/#footer-right-->
+	</div><!--/#footer-in-->
+</footer>
+</div> <!-- close #right2-->
+
+</body>
+</html>

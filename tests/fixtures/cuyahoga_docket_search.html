@@ -1,0 +1,481 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+    <!--
+    Created by Artisteer v3.1.0.48375
+    Base template (without user's data) checked by http://validator.w3.org : "This page is valid XHTML 1.0 Transitional"
+  -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>
+	Search
+</title>
+    <link id="css1" rel="stylesheet" href="/SheriffSearch/web.css" type="text/css" 
+        media="screen" />
+    <link id="css2" rel="stylesheet" href="/SheriffSearch/style.css" type="text/css"
+        media="screen" />
+        
+        <link id="css3" rel="Stylesheet" href="/SheriffSearch/style.css" type="text/css" />
+    <!--[if IE 6]><link rel="stylesheet" href="/SheriffSearch/style.ie6.css" type="text/css" media="screen" /><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" href="/SheriffSearch/style.ie7.css" type="text/css" media="screen" /><![endif]-->
+    <script type="text/javascript" src="/SheriffSearch/Scripts/jquery.js"></script>
+    <script type="text/javascript" src="/SheriffSearch/Scripts/functions.js"></script>
+    <script type="text/javascript" src="/SheriffSearch/Scripts/script.js"></script>
+    
+    
+    <script type="text/javascript">
+        function RedirectToSheriff(parcel_id) {
+            document.getElementById('par_id').value = parcel_id;
+            var myFormName = document.getElementById('aspnetForm')//form id needs to be gotten by ID for Firefox
+            myFormName.submit();
+
+        }
+	</script>
+    <script type="text/javascript">
+        function RedirectToTaxBill(tax_parcel_id, tax_year) {
+            document.getElementById('tax_par_id').value = tax_parcel_id;
+            document.getElementById('tax_year').value = tax_year;
+            var myFormName = document.getElementById('aspnetTaxBillForm')//form id needs to be gotten by ID for Firefox
+            myFormName.submit();
+
+        }
+    </script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+</head>
+<body>
+    <form method="post" action="./" onsubmit="javascript:return WebForm_OnSubmit();" id="form1">
+<div class="aspNetHidden">
+<input type="hidden" name="smMain_HiddenField" id="smMain_HiddenField" value="" />
+<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="" />
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUJOTU1ODk5OTM0D2QWAmYPZBYCAgMPZBYEAgsPZBYCZg9kFgQCAQ8WAh4EVGV4dAWOBDxzdHJvbmc+DQo8cD48ZGl2IHN0eWxlPSJmb250LXNpemU6bGFyZ2VyO2NvbG9yOnJlZDt0ZXh0LWFsaWduOmNlbnRlcjsiPioqQVRURU5USU9OKio8L2Rpdj48L3A+DQogPHA+DQo8dT5BbGw8L3U+IFNoZXJpZmYgU2FsZXMgYXJlIGhlbGQgb25saW5lIG9ubHkgYW5kIGNhbm5vdCBiZSBhdHRlbmRlZCBpbiBwZXJzb24uICBUbyB2aWV3IGEgbGlzdCBvZiB0aGUgcHJvcGVydGllcywgcGxlYXNlIHZpc2l0ICA8YSBocmVmPSJodHRwczovL2N1eWFob2dhLnNoZXJpZmZzYWxlYXVjdGlvbi5vaGlvLmdvdi8iPmh0dHBzOi8vY3V5YWhvZ2Euc2hlcmlmZnNhbGVhdWN0aW9uLm9oaW8uZ292LzwvYT4uIA0KPC9wPg0KIDxwPg0KQmUgaW5mb3JtZWQgdGhhdCB0aGUgbGVnYWwgbm90aWNlcyBvZiBmb3JlY2xvc3VyZSBhbmQgdGF4IGRlbGlucXVlbnQgcHJvcGVydHkgYXJlIHB1Ymxpc2hlZCBwcmlvciB0byBzYWxlIGluIHRoZSBTYXR1cmRheSdzIGVkaXRpb24gb2YgdGhlIERhaWx5IExlZ2FsIE5ld3MuDQo8L3A+DQo8L3N0cm9uZz5kAgMPZBYCZg9kFgICAQ9kFhQCBQ8QDxYGHg5EYXRhVmFsdWVGaWVsZAUIU2FsZURhdGUeDURhdGFUZXh0RmllbGQFC0Rlc2NyaXB0aW9uHgtfIURhdGFCb3VuZGdkEBUpABkxMC8yMS8yMDI2IFRheCBEZWxpbnF1ZW50EjEwLzE5LzIwMjYgTm9uLVRheBIxMC8xMy8yMDI2IE5vbi1UYXgYMTAvNy8yMDI2IFRheCBEZWxpbnF1ZW50ETEwLzUvMjAyNiBOb24tVGF4ETkvMjgvMjAyNiBOb24tVGF4GDkvMjMvMjAyNiBUYXggRGVsaW5xdWVudBE5LzIxLzIwMjYgTm9uLVRheBg5LzE2LzIwMjYgVGF4IERlbGlucXVlbnQROS8xNC8yMDI2IE5vbi1UYXgXOS85LzIwMjYg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AmYPZBYCAgMPDxYCHwBlZGQCFw8PFgIeCU1heExlbmd0aGZkZAIZDxYaHhlDdWx0dXJlRGVjaW1hbFBsYWNlaG9sZGVyBQEuHg5JbnB1dERpcmVjdGlvbgsphgFBamF4Q29udHJvbFRvb2xraXQuTWFza2VkRWRpdElucHV0RGlyZWN0aW9uLCBBamF4Q29udHJvbFRvb2xraXQsIFZlcnNpb249NC4xLjUwNzMxLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49MjhmMDFiMGU4NGI2ZDUzZQAeC0N1bHR1cmVOYW1lBQVlbi1VUx4WQ3VsdHVyZVRpbWVQbGFjZWhvbGRlcgUBOh4KQWNjZXB0QW1QbWgeG0N1bHR1cmVUaG91c2FuZHNQbGFjZWhvbGRlcgUBLB4WQ3VsdHVyZUFNUE1QbGFjZWhvbGRlcgUFQU07UE0eDkFjY2VwdE5lZ2F0aXZlCymCAUFqYXhDb250cm9sVG9vbGtpdC5NYXNrZWRFZGl0U2hvd1N5bWJvbCwgQWpheENvbnRyb2xUb29sa2l0LCBWZXJzaW9uPTQuMS41MDczMS4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPTI4ZjAxYjBlODRiNmQ1M2UAHgxEaXNwbGF5TW9uZXkLKwUAHhNPdmVycmlkZVBhZ2VDdWx0dXJlaB4WQ3VsdHVyZURhdGVQbGFjZWhvbGRlcgUBLx4RQ3VsdHVyZURhdGVGb3JtYXQFA01EWR4gQ3VsdHVyZUN1cnJlbmN5U3ltYm9sUGxhY2Vob2xkZXIFASRkAh8PDxYCHwhmZGQCIQ8WGh8JBQEuHwoLKwQAHwsFBWVuLVVTHwwFATofDWgfDgUBLB8PBQVBTTtQTR8QCysFAB8RCysFAB8SaB8TBQEvHxQFA01EWR8VBQEkZAINDw8WAh8ABQYxLjAuNTVkZGT81sdEM9i1lOZbwc5ofEcHH0pwuRbUHCwG1dGMpkVMZA==" />
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['form1'];
+if (!theForm) {
+    theForm = document.form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="/SheriffSearch/WebResource.axd?d=PgUqagrBOqJe6gNkd_mukvqvNRoXh1eX5MlLcifzwMLNy3k9p9NoprQ5azJQfSMATImbuGossWz3Alqxx7kmAdrPbt01ojU5cgnFcAkmZXk1&amp;t=639190700600000000" type="text/javascript"></script>
+
+
+<script src="/SheriffSearch/ScriptResource.axd?d=CgTskUy2FtXasduizZRIT7GWfVnOx9Tb-F-WPty9oPmPamuGMH70gAFIxttf08N90C5fGvaL5coHQRAcaLRR1rUmKLUZXKadz0tQr9rB4ygZ6cHMd6TQci9d1Xbuvtyk0APwmexp3yvFZAgEDyNRBBFVloL8QHZERSbtnwAAy1k1&amp;t=ffffffff9fe38677" type="text/javascript"></script>
+<script src="/SheriffSearch/ScriptResource.axd?d=x2gqTeHWRqLYBPcmAVMW72sAqCFoHz_aZRbyl6ZiQI_OhlHdKK9VcmQZqE0ykEhEAdRUw8ohWaNHNTRWgaZj2hDH3XdxeNXx2UkPyNMi4R484r5MaL5tO_41KzEs7INO0&amp;t=27117261" type="text/javascript"></script>
+<script src="/SheriffSearch/ScriptResource.axd?d=04Im7AD0Hpbq_4bxNJyRgxM7gxNlwJFx9xgcrVI2x6BiTlrVueczQO6ZO73HoTj4-pYfqwhFGXag0-X5rH20uRXy0fPahy86bAOWdN4BiOICSnXx1G77cF3nxkUeAuUqhUcU26Puh6eOCjhoHmXP5Q2&amp;t=27117261" type="text/javascript"></script>
+<script src="/SheriffSearch/search.aspx?_TSM_HiddenField_=smMain_HiddenField&amp;_TSM_CombinedScripts_=%3b%3bAjaxControlToolkit%2c+Version%3d4.1.50731.0%2c+Culture%3dneutral%2c+PublicKeyToken%3d28f01b0e84b6d53e%3aen-US%3af8fb2a65-e23a-483b-b20e-6db6ef539a22%3ade1feab2%3af9cec9bc%3a35576c48%3af2c8e708%3aa4b66312%3a987bb99b" type="text/javascript"></script>
+<script src="/SheriffSearch/WebResource.axd?d=lIyPB7-Ik5zcIaMZzMcz5iQ6-72UXfA8iOF9C8dCgQp05PjyRYS-lxPo_Q8H1TwrdiaQ_dkj10DXDnlA0hSLhzpY6xd8zK1oK0PmQT9Qf5U1&amp;t=639190700600000000" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+function WebForm_OnSubmit() {
+null;if (typeof(ValidatorOnSubmit) == "function" && ValidatorOnSubmit() == false) return false;
+return true;
+}
+//]]>
+</script>
+
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="C83B1B44" />
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdADgig3ABbV1xMvfdzEbOHtLf5nHaygiEwiFAM9QRwdA5lphodDYwETKxPukTBgmXh9ZXIJu8l1zC/sWtIDKP7jzOzyVZAkQrFowsrFJ2vXSom/wmuUUn+jKFzMhPC15fMERrHdLpyLAjiJHzxrDyMdAzTyIGcsNxjvr/q9QpVMdAUeHg8jBgjWLUugNip052leF4ZUptDFScl1o0YSPjNgCfOf3XM2ClJhsvPPJtu+Kg70P4XP8AA+dIpKkDvaj7NH/7gA7rxuIHufL1AE8qt00FwEd3jnwcWYI44488rKala1EwPUathDFZNO8BBVJUuDGcA8tw94iZQBHk/ucE01PvbJXVmlc8AfY4kbDUEXBHevY5Q5ZNRNm/2HZKLFU42SlVveR8qbZ1ikjdgtp223YZckyrZ/NwSznWfL/5LqSc+Ijy8q3pz2ARdM8GJIF1RH6SmOfE3c/dp1oGSErYk0wrL4smnl5T4dSMsduwojn8sfGavKlGnUx3rSLzTEESzhxsjcDJL3Ez3euH/bttgEtAphYUvVVSESRzgGF27Z4ohHVUT2uIj2rVE2Im9KuTfUKqqzokMOT0t5ETPqtAJFmu4ztMf9i1seMA6EHSPlcIsakiiss7opfDzDd7i1YiIj2n7IosgtnKg/+q8eMMf8oeGswWY9hl4Xs+t/oe2CNuTh30GIcIBCbM5N2HMzr6FYwyTJYA6Pm7KrUCeDbHnntUCZ/j5SMwL2mF7W2QHbhUV6NQpqmQtfar0OxUPBGlM48ggsWeWEBRNwop6ONvu8CY/DXN8MTQu3cJOxpWOvrLwmMV5dznbIrOmvRPF8HNe6ZP/SCzZt6osqArb9BYAA6vw5XfPppk5llc5+HyGBc8Iic8nS6p6/JuzaeMsiiMQDMY80Mbml+WK7TSOXd7hixQoMuJLccOPmGG6DDtMDnRGhYdbrupPrbUN8u2S+nhYa4xO+j+5K1VGiLXcHsg+fIL5daaTiPJqlk9Yg66J47oPwW/z5w8zFNTXXVSI0Xj0ECqNBtiHjohPbBFS3XcTF/xbfijHvPkBYDIa8mZYvOc9Lf8TshiTOoj0tiBb2EyQreTpAPk1USvKKdkH4Gg2oIwUL89m6AQP0BnLvRaA/xhSsb19nJdbx5owMlu8CteNnxMnPAitlm6FExBKMKMqX8JicECwtjLOdTCKzrJHTbI+B9X/6AbKjiOA61EtA/DbCgIvIlS6iQeBX/c7b07M49P" />
+</div>
+    <script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ctl00$smMain', 'form1', ['tctl00$SheetContentPlaceHolder$c_search1$updatePanel','SheetContentPlaceHolder_c_search1_updatePanel'], [], [], 90, 'ctl00');
+//]]>
+</script>
+
+    <div id="art-main">
+        <div class="cleared reset-box">
+        </div>
+        <div class="art-box art-sheet">
+            <div class="art-box-body art-sheet-body">
+                <div class="art-header">
+                    
+<div class="art-headerobject"></div>
+<div class="art-logo">
+        <h1 class="art-logo-name"><img alt="" src="images/banner.png" style="margin-top:20px; margin-left:50px"/></h1>
+            <h2 class="art-logo-text"></h2>
+    </div>
+
+                    
+                    
+                </div>
+                <div class="cleared reset-box">
+                </div>
+                <div class="art-bar art-nav">
+                    <div class="art-nav-outer">
+                        
+<ul class="art-hmenu">
+    <li><a href="search.aspx" class=" active"><span class="l"></span><span class="r"></span><span class="t">Foreclosure Search</span></a></li>
+    
+    
+</ul>
+
+                        
+                        
+                    </div>
+                </div>
+                <div class="cleared reset-box">
+                </div>
+                <div class="art-layout-wrapper">
+                    <div class="art-content-layout">
+                        <div class="art-content-layout-row">
+                            <div class="art-layout-cell art-content">
+                                
+<script type="text/javascript" language="javascript">
+    var prm = Sys.WebForms.PageRequestManager.getInstance();
+    prm.add_endRequest(EndRequest);
+
+    function EndRequest(sender, args) {
+        //call to setup the buttons
+        artButtonSetup("art-button");
+    } 
+</script>
+<div class="art-box art-post">
+    <div class="art-box-body art-post-body">
+        <div class="art-post-inner art-article">
+            <div class="art-postmetadataheader">
+                <h2 class="art-postheader">
+                    Foreclosure Search
+                </h2>
+            </div>
+            <div class="art-postcontent">
+                <strong>
+<p><div style="font-size:larger;color:red;text-align:center;">**ATTENTION**</div></p>
+ <p>
+<u>All</u> Sheriff Sales are held online only and cannot be attended in person.  To view a list of the properties, please visit  <a href="https://cuyahoga.sheriffsaleauction.ohio.gov/">https://cuyahoga.sheriffsaleauction.ohio.gov/</a>. 
+</p>
+ <p>
+Be informed that the legal notices of foreclosure and tax delinquent property are published prior to sale in the Saturday's edition of the Daily Legal News.
+</p>
+</strong>
+                <div id="SheetContentPlaceHolder_c_search1_updatePanel">
+	
+                    <div id="SheetContentPlaceHolder_c_search1_pnlDefButton" onkeypress="javascript:return WebForm_FireDefaultButton(event, &#39;SheetContentPlaceHolder_c_search1_btnSearch&#39;)">
+		
+                        <table cellspacing="0" cellpadding="5" width="100%" align="left">
+                            <tbody>
+                                
+                                <tr>
+                                    <td colspan="3">
+                                        <div style="color: red; text-align: center">
+                                            <div id="SheetContentPlaceHolder_c_search1_vsSearch" style="display:none;">
+
+		</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td align="right">
+                                        <table cellspacing="0" cellpadding="2" width="300em" class="srchTable">
+                                            <tr height="35em">
+                                                <th colspan="2" align="center" class="maingridheader">
+                                                    Select Sale Date
+                                                </th>
+                                            </tr>
+                                            
+                                            <tr height="60em">
+                                                <td align="right">
+                                                    All Sale Dates:
+                                                </td>
+                                                <td align="center">
+                                                    <select name="ctl00$SheetContentPlaceHolder$c_search1$ddlSaleDate" id="SheetContentPlaceHolder_c_search1_ddlSaleDate">
+			<option value=""></option>
+			<option value="10/21/2026 12:00:00 AMT">10/21/2026 Tax Delinquent</option>
+			<option value="10/19/2026 12:00:00 AMN">10/19/2026 Non-Tax</option>
+			<option value="10/13/2026 12:00:00 AMN">10/13/2026 Non-Tax</option>
+			<option value="10/7/2026 12:00:00 AMT">10/7/2026 Tax Delinquent</option>
+			<option value="10/5/2026 12:00:00 AMN">10/5/2026 Non-Tax</option>
+			<option value="9/28/2026 12:00:00 AMN">9/28/2026 Non-Tax</option>
+			<option value="9/23/2026 12:00:00 AMT">9/23/2026 Tax Delinquent</option>
+			<option value="9/21/2026 12:00:00 AMN">9/21/2026 Non-Tax</option>
+			<option value="9/16/2026 12:00:00 AMT">9/16/2026 Tax Delinquent</option>
+			<option value="9/14/2026 12:00:00 AMN">9/14/2026 Non-Tax</option>
+			<option value="9/9/2026 12:00:00 AMT">9/9/2026 Tax Delinquent</option>
+			<option value="9/8/2026 12:00:00 AMN">9/8/2026 Non-Tax</option>
+			<option value="9/2/2026 12:00:00 AMT">9/2/2026 Tax Delinquent</option>
+			<option value="8/31/2026 12:00:00 AMN">8/31/2026 Non-Tax</option>
+			<option value="8/24/2026 12:00:00 AMN">8/24/2026 Non-Tax</option>
+			<option value="8/17/2026 12:00:00 AMN">8/17/2026 Non-Tax</option>
+			<option value="8/10/2026 12:00:00 AMN">8/10/2026 Non-Tax</option>
+			<option value="8/3/2026 12:00:00 AMN">8/3/2026 Non-Tax</option>
+			<option value="7/27/2026 12:00:00 AMN">7/27/2026 Non-Tax</option>
+			<option value="7/20/2026 12:00:00 AMN">7/20/2026 Non-Tax</option>
+			<option value="7/13/2026 12:00:00 AMN">7/13/2026 Non-Tax</option>
+			<option value="7/6/2026 12:00:00 AMN">7/6/2026 Non-Tax</option>
+			<option value="6/29/2026 12:00:00 AMN">6/29/2026 Non-Tax</option>
+			<option value="6/24/2026 12:00:00 AMT">6/24/2026 Tax Delinquent</option>
+			<option value="6/22/2026 12:00:00 AMN">6/22/2026 Non-Tax</option>
+			<option value="6/17/2026 12:00:00 AMT">6/17/2026 Tax Delinquent</option>
+			<option value="6/15/2026 12:00:00 AMN">6/15/2026 Non-Tax</option>
+			<option value="6/10/2026 12:00:00 AMT">6/10/2026 Tax Delinquent</option>
+			<option value="6/8/2026 12:00:00 AMN">6/8/2026 Non-Tax</option>
+			<option value="6/3/2026 12:00:00 AMT">6/3/2026 Tax Delinquent</option>
+			<option value="6/1/2026 12:00:00 AMN">6/1/2026 Non-Tax</option>
+			<option value="5/27/2026 12:00:00 AMT">5/27/2026 Tax Delinquent</option>
+			<option value="5/26/2026 12:00:00 AMN">5/26/2026 Non-Tax</option>
+			<option value="5/20/2026 12:00:00 AMT">5/20/2026 Tax Delinquent</option>
+			<option value="5/18/2026 12:00:00 AMN">5/18/2026 Non-Tax</option>
+			<option value="5/13/2026 12:00:00 AMT">5/13/2026 Tax Delinquent</option>
+			<option value="5/11/2026 12:00:00 AMN">5/11/2026 Non-Tax</option>
+			<option value="5/6/2026 12:00:00 AMT">5/6/2026 Tax Delinquent</option>
+			<option value="5/4/2026 12:00:00 AMN">5/4/2026 Non-Tax</option>
+			<option value="4/27/2026 12:00:00 AMN">4/27/2026 Non-Tax</option>
+
+		</select>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td align="center" width="50em" class="noBackgroundColor">
+                                        <b>- OR -</b>
+                                    </td>
+                                    <td align="left">
+                                        <table cellspacing="0" cellpadding="2" width="300em" class="srchTable">
+                                            <tr height="35em">
+                                                <th class="maingridheader" align="center" colspan="2">
+                                                    Select Search Criteria
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" height="100em" colspan="2">
+                                                    <table id="SheetContentPlaceHolder_c_search1_rblSrchOptions" class="datagridtext">
+			<tr>
+				<td><input id="SheetContentPlaceHolder_c_search1_rblSrchOptions_0" type="radio" name="ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions" value="CaseNum" checked="checked" /><label for="SheetContentPlaceHolder_c_search1_rblSrchOptions_0">Case Number (i.e. CI200701234)</label></td>
+			</tr><tr>
+				<td><input id="SheetContentPlaceHolder_c_search1_rblSrchOptions_1" type="radio" name="ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions" value="PropStreetName" onclick="javascript:setTimeout(&#39;__doPostBack(\&#39;ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions$1\&#39;,\&#39;\&#39;)&#39;, 0)" /><label for="SheetContentPlaceHolder_c_search1_rblSrchOptions_1">Property Street Name</label></td>
+			</tr><tr>
+				<td><input id="SheetContentPlaceHolder_c_search1_rblSrchOptions_2" type="radio" name="ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions" value="DefName" onclick="javascript:setTimeout(&#39;__doPostBack(\&#39;ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions$2\&#39;,\&#39;\&#39;)&#39;, 0)" /><label for="SheetContentPlaceHolder_c_search1_rblSrchOptions_2">Defendant's Name</label></td>
+			</tr><tr>
+				<td><input id="SheetContentPlaceHolder_c_search1_rblSrchOptions_3" type="radio" name="ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions" value="ZipCode" onclick="javascript:setTimeout(&#39;__doPostBack(\&#39;ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions$3\&#39;,\&#39;\&#39;)&#39;, 0)" /><label for="SheetContentPlaceHolder_c_search1_rblSrchOptions_3">Zip Code</label></td>
+			</tr><tr>
+				<td><input id="SheetContentPlaceHolder_c_search1_rblSrchOptions_4" type="radio" name="ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions" value="City" onclick="javascript:setTimeout(&#39;__doPostBack(\&#39;ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions$4\&#39;,\&#39;\&#39;)&#39;, 0)" /><label for="SheetContentPlaceHolder_c_search1_rblSrchOptions_4">City</label></td>
+			</tr><tr>
+				<td><input id="SheetContentPlaceHolder_c_search1_rblSrchOptions_5" type="radio" name="ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions" value="ParcelNum" onclick="javascript:setTimeout(&#39;__doPostBack(\&#39;ctl00$SheetContentPlaceHolder$c_search1$rblSrchOptions$5\&#39;,\&#39;\&#39;)&#39;, 0)" /><label for="SheetContentPlaceHolder_c_search1_rblSrchOptions_5">Parcel Number</label></td>
+			</tr>
+		</table>
+                                                </td>
+                                            </tr>
+                                            <tr height="35em" >
+                                                <td align="center" colspan="2"> 
+                                                    
+                                                    <input name="ctl00$SheetContentPlaceHolder$c_search1$SrchSearchString" type="text" maxlength="80" id="SheetContentPlaceHolder_c_search1_SrchSearchString" onKeyUp="ResetDateField(&#39;SheetContentPlaceHolder_c_search1_ddlSaleDate&#39;);return true" style="width:150pt;" />
+                                                    <input type="hidden" name="ctl00$SheetContentPlaceHolder$c_search1$TBWE1_ClientState" id="SheetContentPlaceHolder_c_search1_TBWE1_ClientState" />
+                                                    <span id="SheetContentPlaceHolder_c_search1_rfvSearch" style="display:none;"></span>
+                                                    <span id="SheetContentPlaceHolder_c_search1_revSearch" style="display:none;"></span>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr class="datagridtext">
+                                                <td align="right">
+                                                    <span id="SheetContentPlaceHolder_c_search1_Label1">Sale Date From: </span>
+                                                </td>
+                                                <td align="center">
+                                                    <input name="ctl00$SheetContentPlaceHolder$c_search1$SearchStringDateFrom" type="text" value="4/24/2026" id="SheetContentPlaceHolder_c_search1_SearchStringDateFrom" />
+                                                    <input type="hidden" name="ctl00$SheetContentPlaceHolder$c_search1$FromMaskedEditExtender_ClientState" id="SheetContentPlaceHolder_c_search1_FromMaskedEditExtender_ClientState" />  
+                                                    <span id="SheetContentPlaceHolder_c_search1_revDateFrom" style="display:none;"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="right">
+                                                    <span id="SheetContentPlaceHolder_c_search1_Label2" class="srchTableText">Sale Date To: </span>
+                                                </td>
+                                                <td align="center">
+                                                    <input name="ctl00$SheetContentPlaceHolder$c_search1$SearchStringDateTo" type="text" value="10/23/2026" id="SheetContentPlaceHolder_c_search1_SearchStringDateTo" />
+                                                    <input type="hidden" name="ctl00$SheetContentPlaceHolder$c_search1$TOMaskedEditExtender_ClientState" id="SheetContentPlaceHolder_c_search1_TOMaskedEditExtender_ClientState" />  
+                                                    <span id="SheetContentPlaceHolder_c_search1_revDateTo" style="display:none;"></span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="3" style="height: 50px">
+                                        <input type="submit" name="ctl00$SheetContentPlaceHolder$c_search1$btnSearch" value="Start Search" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$SheetContentPlaceHolder$c_search1$btnSearch&quot;, &quot;&quot;, true, &quot;Search&quot;, &quot;&quot;, false, false))" id="SheetContentPlaceHolder_c_search1_btnSearch" class="art-button" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="3" class="noBackgroundColor">
+                                        <p>
+                                            NOTE: IF YOU SEARCH BY DATE,<br>
+                                            ALL OTHER CRITERIA ARE IGNORED.</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+	</div>
+                    
+</div>
+            </div>
+            <div class="cleared">
+            </div>
+        </div>
+        <div class="cleared">
+        </div>
+    </div>
+</div>
+
+
+                                <div class="cleared">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cleared">
+                </div>
+                <div class="art-footer">
+                    <div class="art-footer-body">
+                        <div class="art-footer-text">
+                            Copyright &copy;
+                            <script type="text/javascript">
+                                <!--
+
+                                var d = new Date();
+                                var curr_year = d.getFullYear();
+                                document.write(curr_year);
+
+                                /* The last two lines above have 
+                                to placed on a single line */
+
+                                //-->
+                            </script>
+                            <a href="http://www.proware.com">PROWARE</a>. All Rights Reserved.
+                            <br />
+                            <span id="lblVersion">1.0.55</span>
+                        </div>
+                        <div class="cleared">
+                        </div>
+                    </div>
+                </div>
+                <div class="cleared">
+                </div>
+            </div>
+        </div>
+        <div class="cleared">
+        </div>
+        <div class="cleared">
+        </div>
+    </div>
+    
+<script type="text/javascript">
+//<![CDATA[
+var Page_ValidationSummaries =  new Array(document.getElementById("SheetContentPlaceHolder_c_search1_vsSearch"));
+var Page_Validators =  new Array(document.getElementById("SheetContentPlaceHolder_c_search1_rfvSearch"), document.getElementById("SheetContentPlaceHolder_c_search1_revSearch"), document.getElementById("SheetContentPlaceHolder_c_search1_revDateFrom"), document.getElementById("SheetContentPlaceHolder_c_search1_revDateTo"));
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var SheetContentPlaceHolder_c_search1_vsSearch = document.all ? document.all["SheetContentPlaceHolder_c_search1_vsSearch"] : document.getElementById("SheetContentPlaceHolder_c_search1_vsSearch");
+SheetContentPlaceHolder_c_search1_vsSearch.validationGroup = "Search";
+var SheetContentPlaceHolder_c_search1_rfvSearch = document.all ? document.all["SheetContentPlaceHolder_c_search1_rfvSearch"] : document.getElementById("SheetContentPlaceHolder_c_search1_rfvSearch");
+SheetContentPlaceHolder_c_search1_rfvSearch.controltovalidate = "SheetContentPlaceHolder_c_search1_SrchSearchString";
+SheetContentPlaceHolder_c_search1_rfvSearch.errormessage = "Please enter a last name.";
+SheetContentPlaceHolder_c_search1_rfvSearch.display = "None";
+SheetContentPlaceHolder_c_search1_rfvSearch.enabled = "False";
+SheetContentPlaceHolder_c_search1_rfvSearch.validationGroup = "Search";
+SheetContentPlaceHolder_c_search1_rfvSearch.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+SheetContentPlaceHolder_c_search1_rfvSearch.initialvalue = "";
+var SheetContentPlaceHolder_c_search1_revSearch = document.all ? document.all["SheetContentPlaceHolder_c_search1_revSearch"] : document.getElementById("SheetContentPlaceHolder_c_search1_revSearch");
+SheetContentPlaceHolder_c_search1_revSearch.controltovalidate = "SheetContentPlaceHolder_c_search1_SrchSearchString";
+SheetContentPlaceHolder_c_search1_revSearch.errormessage = "Case Number must be shorter than 20 characters.";
+SheetContentPlaceHolder_c_search1_revSearch.display = "None";
+SheetContentPlaceHolder_c_search1_revSearch.validationGroup = "Search";
+SheetContentPlaceHolder_c_search1_revSearch.evaluationfunction = "RegularExpressionValidatorEvaluateIsValid";
+SheetContentPlaceHolder_c_search1_revSearch.validationexpression = "^.{0,20}$";
+var SheetContentPlaceHolder_c_search1_revDateFrom = document.all ? document.all["SheetContentPlaceHolder_c_search1_revDateFrom"] : document.getElementById("SheetContentPlaceHolder_c_search1_revDateFrom");
+SheetContentPlaceHolder_c_search1_revDateFrom.controltovalidate = "SheetContentPlaceHolder_c_search1_SearchStringDateFrom";
+SheetContentPlaceHolder_c_search1_revDateFrom.errormessage = "Invalid date entered.";
+SheetContentPlaceHolder_c_search1_revDateFrom.display = "None";
+SheetContentPlaceHolder_c_search1_revDateFrom.validationGroup = "Search";
+SheetContentPlaceHolder_c_search1_revDateFrom.evaluationfunction = "RegularExpressionValidatorEvaluateIsValid";
+SheetContentPlaceHolder_c_search1_revDateFrom.validationexpression = "^((0?\\d)|(1[012]))[-.\\/](([012]?\\d)|(3[01]))[-.\\/](\\d{4}|\\d{2})";
+var SheetContentPlaceHolder_c_search1_revDateTo = document.all ? document.all["SheetContentPlaceHolder_c_search1_revDateTo"] : document.getElementById("SheetContentPlaceHolder_c_search1_revDateTo");
+SheetContentPlaceHolder_c_search1_revDateTo.controltovalidate = "SheetContentPlaceHolder_c_search1_SearchStringDateTo";
+SheetContentPlaceHolder_c_search1_revDateTo.errormessage = "Invalid date entered.";
+SheetContentPlaceHolder_c_search1_revDateTo.display = "None";
+SheetContentPlaceHolder_c_search1_revDateTo.validationGroup = "Search";
+SheetContentPlaceHolder_c_search1_revDateTo.evaluationfunction = "RegularExpressionValidatorEvaluateIsValid";
+SheetContentPlaceHolder_c_search1_revDateTo.validationexpression = "^((0?\\d)|(1[012]))[-.\\/](([012]?\\d)|(3[01]))[-.\\/](\\d{4}|\\d{2})";
+//]]>
+</script>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {var fn = function() {$get("smMain_HiddenField").value = '';Sys.Application.remove_init(fn);};Sys.Application.add_init(fn);})();
+(function(id) {
+    var e = document.getElementById(id);
+    if (e) {
+        e.dispose = function() {
+            Array.remove(Page_ValidationSummaries, document.getElementById(id));
+        }
+        e = null;
+    }
+})('SheetContentPlaceHolder_c_search1_vsSearch');
+
+var Page_ValidationActive = false;
+if (typeof(ValidatorOnLoad) == "function") {
+    ValidatorOnLoad();
+}
+
+function ValidatorOnSubmit() {
+    if (Page_ValidationActive) {
+        return ValidatorCommonOnSubmit();
+    }
+    else {
+        return true;
+    }
+}
+        WebForm_AutoFocus('SheetContentPlaceHolder_c_search1_SrchSearchString');Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.TextBoxWatermarkBehavior, {"ClientStateFieldID":"SheetContentPlaceHolder_c_search1_TBWE1_ClientState","WatermarkCssClass":"Watermark","WatermarkText":"Case Number","id":"SheetContentPlaceHolder_c_search1_TBWE1"}, null, null, $get("SheetContentPlaceHolder_c_search1_SrchSearchString"));
+});
+
+document.getElementById('SheetContentPlaceHolder_c_search1_rfvSearch').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('SheetContentPlaceHolder_c_search1_rfvSearch'));
+}
+
+document.getElementById('SheetContentPlaceHolder_c_search1_revSearch').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('SheetContentPlaceHolder_c_search1_revSearch'));
+}
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.MaskedEditBehavior, {"Century":2000,"ClientStateFieldID":"SheetContentPlaceHolder_c_search1_FromMaskedEditExtender_ClientState","CultureAMPMPlaceholder":"AM;PM","CultureCurrencySymbolPlaceholder":"$","CultureDateFormat":"MDY","CultureDatePlaceholder":"/","CultureDecimalPlaceholder":".","CultureName":"en-US","CultureThousandsPlaceholder":",","CultureTimePlaceholder":":","Mask":"99/99/9999","MaskType":1,"id":"SheetContentPlaceHolder_c_search1_FromMaskedEditExtender"}, null, null, $get("SheetContentPlaceHolder_c_search1_SearchStringDateFrom"));
+});
+
+document.getElementById('SheetContentPlaceHolder_c_search1_revDateFrom').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('SheetContentPlaceHolder_c_search1_revDateFrom'));
+}
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.MaskedEditBehavior, {"Century":2000,"ClientStateFieldID":"SheetContentPlaceHolder_c_search1_TOMaskedEditExtender_ClientState","CultureAMPMPlaceholder":"AM;PM","CultureCurrencySymbolPlaceholder":"$","CultureDateFormat":"MDY","CultureDatePlaceholder":"/","CultureDecimalPlaceholder":".","CultureName":"en-US","CultureThousandsPlaceholder":",","CultureTimePlaceholder":":","Mask":"99/99/9999","MaskType":1,"id":"SheetContentPlaceHolder_c_search1_TOMaskedEditExtender"}, null, null, $get("SheetContentPlaceHolder_c_search1_SearchStringDateTo"));
+});
+
+document.getElementById('SheetContentPlaceHolder_c_search1_revDateTo').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('SheetContentPlaceHolder_c_search1_revDateTo'));
+}
+//]]>
+</script>
+</form>
+    <form name="aspnetForm" action="http://fiscalofficer.cuyahogacounty.us/AuditorApps/real-property/REPI/General.asp" method="post" id="aspnetForm" target="_blank">
+		<input type="hidden" name="par_id" id="par_id"/>
+	</form>
+    <form name="aspnetTaxBillForm" action="http://fiscalofficer.cuyahogacounty.us/AuditorApps/real-property/REPI/taxbill.asp" method="post" id="aspnetTaxBillForm" target="_blank">
+		<input type="hidden" name="tax_par_id" id="tax_par_id"/>
+        <input type="hidden" name="tax_year" id="tax_year" />
+	</form>
+</body>
+</html>

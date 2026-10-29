@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}spraulron{% endblock %}</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="/static/styles.css">
+<script>window.PAGE = {{ page_json|safe }};</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">🏘</span> spraulron <span class="sub">NE Ohio multifamily · Summit · Cuyahoga · Stark</span></div>
+  <nav>
+    <a href="/market" class="{% if page.kind == 'market' %}active{% endif %}">Market</a>
+    <a href="/auctions" class="{% if page.kind == 'auctions' %}active{% endif %}">Auctions</a>
+  </nav>
+  <div class="topbar-actions">
+    <button id="btn-refresh-all" class="btn" title="Re-fetch every source for this page now (bypasses the cache)">⟳ Refresh all</button>
+  </div>
+</header>
+<div id="sources" class="sources"></div>
+<div id="warnings" class="warnings"></div>
+<main class="layout">
+  <aside class="sidebar">
+    {% block sidebar %}{% endblock %}
+    {% include "_fha_panel.html" %}
+  </aside>
+  <section class="content">
+    <div id="summary" class="summary"></div>
+    <div class="map-wrap"><div id="map"></div><button id="btn-map-toggle" class="btn tiny map-toggle">hide map</button></div>
+    {% block content %}{% endblock %}
+  </section>
+</main>
+<footer class="foot">
+  Data is fetched live from county, HUD, OHFA and listing sources and cached briefly on this machine; images are shown from their source and never stored.
+  Nothing here is underwriting, legal advice or a title search. Verify every number with the county, a lender and a title company before bidding or offering.
+</footer>
+<dialog id="override-dialog"></dialog>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
